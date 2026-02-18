@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 /* ─── Notion-style navigable dashboard mockup ─── */
 
@@ -442,7 +442,34 @@ function SectionContent({ section }: { section: SectionKey }) {
 }
 
 function DashboardMockup() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("ticket");
+  const [activeSection, setActiveSection] = useState<SectionKey>("home");
+  const pauseRef = useRef(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-cycle through sections every 2.5s
+  useEffect(() => {
+    const keys = SIDEBAR_ITEMS.map((i) => i.key);
+
+    const tick = () => {
+      if (!pauseRef.current) {
+        setActiveSection((prev) => {
+          const idx = keys.indexOf(prev);
+          return keys[(idx + 1) % keys.length];
+        });
+      }
+    };
+
+    timerRef.current = setInterval(tick, 2500);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, []);
+
+  // Manual click: set section, pause for one full cycle, then resume
+  const handleManualClick = (key: SectionKey) => {
+    setActiveSection(key);
+    pauseRef.current = true;
+    // Resume auto-cycle after 6s (enough time to explore)
+    setTimeout(() => { pauseRef.current = false; }, 6000);
+  };
 
   return (
     <div className="relative w-full min-w-[600px]" aria-hidden="true">
@@ -469,7 +496,7 @@ function DashboardMockup() {
               {SIDEBAR_ITEMS.map((item) => (
                 <button
                   key={item.key}
-                  onClick={() => setActiveSection(item.key)}
+                  onClick={() => handleManualClick(item.key)}
                   className={`flex items-center gap-2 px-2.5 py-[7px] rounded-md text-left transition-all duration-150 w-full ${
                     activeSection === item.key
                       ? "bg-primary/8 text-primary font-semibold"
@@ -512,9 +539,48 @@ function DashboardMockup() {
   );
 }
 
+/* ─── Typing effect hook ─── */
+function useTypingEffect(text: string, speed = 45, startDelay = 300) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+  const idx = useRef(0);
+
+  useEffect(() => {
+    const delayTimer = setTimeout(() => {
+      const interval = setInterval(() => {
+        idx.current++;
+        setDisplayed(text.slice(0, idx.current));
+        if (idx.current >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, speed);
+      return () => clearInterval(interval);
+    }, startDelay);
+    return () => clearTimeout(delayTimer);
+  }, [text, speed, startDelay]);
+
+  return { displayed, done };
+}
+
 export default function HeroSection() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { const t = setTimeout(() => setMounted(true), 100); return () => clearTimeout(t); }, []);
+
+  const LINES = ["Gestisci la tua", "casa, anche", "da lontano."];
+  const FULL = LINES.join(" ");
+  const { displayed, done } = useTypingEffect(FULL, 45, 400);
+
+  // Map typed chars to the 3 fixed lines
+  const breaks = [LINES[0].length, LINES[0].length + 1 + LINES[1].length];
+  const typed1 = displayed.slice(0, LINES[0].length);
+  const typed2 = displayed.length > breaks[0] + 1 ? displayed.slice(breaks[0] + 1, breaks[1]) : "";
+  const typed3 = displayed.length > breaks[1] + 1 ? displayed.slice(breaks[1] + 1) : "";
+  const cursorLine = displayed.length <= breaks[0] ? 0 : displayed.length <= breaks[1] ? 1 : 2;
+
+  const cursor = (
+    <span className={`inline-block w-[3px] h-[0.85em] bg-primary ml-1 align-baseline relative top-[0.05em] ${done ? "animate-blink" : ""}`} />
+  );
 
   return (
     <section className="relative bg-dark overflow-hidden rounded-b-[2rem]">
@@ -523,11 +589,17 @@ export default function HeroSection() {
           {/* Left — copy */}
           <div className="pb-16 md:pb-24">
             <h1
-              className={`font-display text-[38px] md:text-[50px] lg:text-[58px] font-bold text-white leading-[1.06] tracking-[-0.025em] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              className="font-display text-[38px] md:text-[50px] lg:text-[58px] font-bold text-white leading-[1.06] tracking-[-0.025em]"
             >
-              Gestisci la tua casa,{" "}
-              <br className="hidden md:block" />
-              anche da lontano.
+              {LINES.map((line, i) => (
+                <span key={i} className="block relative">
+                  <span className="invisible" aria-hidden="true">{line}</span>
+                  <span className="absolute inset-0">
+                    {i === 0 ? typed1 : i === 1 ? typed2 : typed3}
+                    {cursorLine === i && cursor}
+                  </span>
+                </span>
+              ))}
             </h1>
 
             <p

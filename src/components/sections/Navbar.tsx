@@ -55,6 +55,10 @@ const NAV_ITEMS = [
     label: "Prezzi",
     href: "#prezzi",
   },
+  {
+    label: "FAQ",
+    href: "#faq",
+  },
 ];
 
 export default function Navbar() {
