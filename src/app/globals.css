@@ -155,6 +155,51 @@ p {
 }
 
 /* ═══════════════════════════════════════════════
+   Logo marquee — infinite scroll
+   ═══════════════════════════════════════════════ */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.logo-marquee {
+  animation: marquee 30s linear infinite;
+  width: max-content;
+}
+.logo-marquee:hover {
+  animation-play-state: paused;
+}
+.mask-edges {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+/* ═══════════════════════════════════════════════
+   Testimonial columns — vertical infinite scroll
+   ═══════════════════════════════════════════════ */
+@keyframes testimonial-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+@keyframes testimonial-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+.testimonial-scroll-up {
+  animation: testimonial-up 45s linear infinite;
+}
+.testimonial-scroll-down {
+  animation: testimonial-down 45s linear infinite;
+}
+.testimonial-scroll-up:hover,
+.testimonial-scroll-down:hover {
+  animation-play-state: paused;
+}
+.testimonial-mask {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+/* ═══════════════════════════════════════════════
    Hero typing cursor blink
    ═══════════════════════════════════════════════ */
 @keyframes blink {

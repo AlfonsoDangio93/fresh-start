@@ -21,3 +21,7 @@ npm-debug.log*
 .windsurf/
 .agent/
 .agents/
+.claude/
+
+# Skills
+*.skill

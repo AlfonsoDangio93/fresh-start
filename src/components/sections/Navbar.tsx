@@ -69,15 +69,33 @@ export default function Navbar() {
   const navRef = useRef<HTMLDivElement>(null);
   const ticking = useRef(false);
 
-  // Scroll detection — merge after hero
+  // Scroll detection — merge after hero, split again on dark sections
   useEffect(() => {
     const onScroll = () => {
       if (ticking.current) return;
       ticking.current = true;
       requestAnimationFrame(() => {
         const heroEl = document.querySelector("section");
-        const threshold = heroEl ? heroEl.offsetHeight - 100 : 500;
-        setMerged(window.scrollY > threshold);
+        const heroEnd = heroEl ? heroEl.offsetTop + heroEl.offsetHeight - 100 : 500;
+        const darkEl = document.getElementById("come-funziona");
+        const scrollY = window.scrollY;
+
+        if (scrollY <= heroEnd) {
+          // Still in hero — split
+          setMerged(false);
+        } else if (darkEl) {
+          const darkTop = darkEl.offsetTop - 80;
+          const darkBottom = darkEl.offsetTop + darkEl.offsetHeight - 80;
+          if (scrollY >= darkTop && scrollY <= darkBottom) {
+            // Inside dark section — split
+            setMerged(false);
+          } else {
+            setMerged(true);
+          }
+        } else {
+          setMerged(true);
+        }
+
         ticking.current = false;
       });
     };

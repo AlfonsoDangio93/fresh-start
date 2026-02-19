@@ -583,7 +583,7 @@ export default function HeroSection() {
   );
 
   return (
-    <section className="relative bg-dark overflow-hidden rounded-b-[2rem]">
+    <section className="relative bg-dark overflow-hidden rounded-b-[10px]">
       <div className="max-w-site mx-auto px-6 pt-32 pb-0 md:pt-40">
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-8 items-end">
           {/* Left — copy */}
@@ -617,13 +617,13 @@ export default function HeroSection() {
             >
               <Link
                 href="#"
-                className="inline-flex items-center justify-center bg-white text-dark font-semibold text-[15px] rounded-full px-8 py-3.5 transition-all duration-200 hover:bg-white/90 cursor-pointer"
+                className="inline-flex items-center justify-center bg-white text-dark font-semibold text-[15px] rounded-[10px] px-8 py-3.5 transition-all duration-200 hover:bg-white/90 cursor-pointer"
               >
                 Richiedi una demo
               </Link>
               <Link
                 href="#"
-                className="inline-flex items-center justify-center text-white font-semibold text-[15px] rounded-full px-8 py-3.5 border border-white/20 hover:border-white/40 transition-all duration-200 cursor-pointer"
+                className="inline-flex items-center justify-center text-white font-semibold text-[15px] rounded-[10px] px-8 py-3.5 border border-white/20 hover:border-white/40 transition-all duration-200 cursor-pointer"
               >
                 Inizia ora
               </Link>

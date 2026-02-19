@@ -2,78 +2,236 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const TESTIMONIALS = [
-  {
-    quote: "Da quando usiamo Hommi, gestiamo 40 appartamenti senza impazzire. I guasti vengono risolti prima che l'ospite se ne accorga.",
-    name: "Marco Bellini",
-    role: "Property Manager · Milano",
-    initials: "MB",
-  },
-  {
-    quote: "Il tempo medio di risposta è pazzesco. Prima perdevamo ore al telefono con idraulici e elettricisti, ora ci pensa Hommi.",
-    name: "Giulia Ferretti",
-    role: "Host Superhost · Firenze",
-    initials: "GF",
-  },
-  {
-    quote: "La reportistica è il vero game-changer. Sapere esattamente quanto spendo per ogni alloggio mi ha fatto risparmiare il 30%.",
-    name: "Alessandro Conti",
-    role: "CEO, StayBright Rentals · Roma",
-    initials: "AC",
-  },
+/* ─── Review data ─── */
+const REVIEWS = [
+  // Column 1
+  [
+    {
+      stars: 5,
+      time: "2 giorni fa",
+      text: "Gestisco 40 appartamenti e prima impazzivo con i guasti. Adesso apro un ticket in 10 secondi e il tecnico arriva in giornata. Non torno indietro.",
+      name: "Marco Bellini",
+      role: "Property Manager, Milano",
+    },
+    {
+      stars: 5,
+      time: "1 settimana fa",
+      text: "Stagione estiva = inferno. 25 alloggi, ognuno con problemi diversi. Hommi mi ha salvato la vita. Letteralmente. L'ho consigliato a 3 colleghi.",
+      name: "Alessandra Pieri",
+      role: "Host Superhost, Rimini",
+    },
+    {
+      stars: 4,
+      time: "3 giorni fa",
+      text: "Non sono bravissimo col computer. Ma Hommi è talmente semplice che l'ho imparato in 20 minuti. Ora non posso farne a meno. Prima ero uno schiavo di Excel.",
+      name: "Luca Marchetti",
+      role: "Gestore B&B, Como",
+    },
+    {
+      stars: 5,
+      time: "5 giorni fa",
+      text: "Il report mensile che esporto per i proprietari è una bomba. Vedono tutto: costi, interventi, tempi. Zero lamentele da quando uso Hommi.",
+      name: "Francesca Neri",
+      role: "Property Manager, Torino",
+    },
+  ],
+  // Column 2
+  [
+    {
+      stars: 5,
+      time: "6 giorni fa",
+      text: "Il commercialista mi chiedeva sempre i costi di manutenzione e io impazzivo. Ora esporto tutto in 2 click. Anche lui è contento.",
+      name: "Roberto Conti",
+      role: "Gestore Appartamenti, Roma",
+    },
+    {
+      stars: 5,
+      time: "1 settimana fa",
+      text: "Prima ogni guasto era un casino. Ora se un ospite segnala un problema, il tecnico è già in strada. È magia.",
+      name: "Elena Moretti",
+      role: "Host Superhost, Siena",
+    },
+    {
+      stars: 5,
+      time: "3 giorni fa",
+      text: "Ho recuperato 2 ore a settimana che uso per acquisire nuovi clienti invece di rincorrere idraulici. Hommi si ripaga da solo.",
+      name: "Davide Russo",
+      role: "Property Manager, Napoli",
+    },
+    {
+      stars: 5,
+      time: "4 giorni fa",
+      text: "La dashboard è spettacolare. Vedo tutto in un colpo d'occhio: ticket aperti, tempi, costi. Mai più brutte sorprese a fine mese.",
+      name: "Sara Colombo",
+      role: "CEO, StayBright Rentals",
+    },
+  ],
+  // Column 3
+  [
+    {
+      stars: 5,
+      time: "2 giorni fa",
+      text: "Credevo che a questo prezzo fosse troppo bello per essere vero. Invece funziona benissimo e non pago abbonamenti nascosti. Affare del secolo.",
+      name: "Michele Galli",
+      role: "Gestore Turistico, Palermo",
+    },
+    {
+      stars: 5,
+      time: "1 settimana fa",
+      text: "Turni serali, weekend, festivi... trovare un tecnico era un incubo. Con Hommi trovo professionisti verificati in automatico. Lo consiglio a tutti.",
+      name: "Valentina Ferrara",
+      role: "Host Superhost, Catania",
+    },
+    {
+      stars: 4,
+      time: "5 giorni fa",
+      text: "Abbiamo 120 alloggi in gestione. Prima di Hommi servivano 3 persone solo per la manutenzione. Ora ne basta una. Risultato: -60% sui costi operativi.",
+      name: "Andrea Bianchi",
+      role: "COO, ItalyStay Group",
+    },
+    {
+      stars: 5,
+      time: "3 giorni fa",
+      text: "Le notifiche in tempo reale sono il top. So sempre a che punto è ogni intervento senza dover chiamare nessuno. Finalmente respiro.",
+      name: "Chiara Lombardi",
+      role: "Property Manager, Brescia",
+    },
+  ],
+  // Column 4
+  [
+    {
+      stars: 5,
+      time: "1 giorno fa",
+      text: "Gestisco appartamenti da remoto, da Londra. Con Hommi è come essere sul posto. Apro ticket, vedo foto, approvo preventivi. Tutto dal telefono.",
+      name: "Paolo Ferri",
+      role: "Investitore Immobiliare, Londra",
+    },
+    {
+      stars: 5,
+      time: "4 giorni fa",
+      text: "I proprietari degli immobili che gestisco sono entusiasti. Vedono i report, i tempi di risoluzione, i costi. Trasparenza totale = fiducia totale.",
+      name: "Giulia Ferretti",
+      role: "Property Manager, Firenze",
+    },
+    {
+      stars: 4,
+      time: "1 settimana fa",
+      text: "All'inizio ero scettico, un altro software... Dopo 2 settimane ho capito che Hommi è diverso. Semplice, veloce, funziona. Punto.",
+      name: "Stefano Ricci",
+      role: "Gestore Case Vacanza, Sardegna",
+    },
+    {
+      stars: 5,
+      time: "6 giorni fa",
+      text: "Il calendario interventi mi ha cambiato la vita. Sopralluoghi, check-out, manutenzioni programmate: tutto in un'unica vista sincronizzata.",
+      name: "Anna Greco",
+      role: "Property Manager, Bologna",
+    },
+  ],
 ];
 
+/* ─── Star component ─── */
+function Stars({ count }: { count: number }) {
+  return (
+    <div className="flex gap-0.5">
+      {[...Array(count)].map((_, i) => (
+        <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="#22804A" stroke="none">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Single review card ─── */
+function ReviewCard({ review }: { review: (typeof REVIEWS)[0][0] }) {
+  return (
+    <div className="bg-white rounded-2xl border border-border p-5 md:p-6 mb-4 break-inside-avoid">
+      <div className="flex items-center justify-between mb-3">
+        <Stars count={review.stars} />
+        <span className="text-[12px] text-secondary/40 shrink-0 ml-3">{review.time}</span>
+      </div>
+      <p className="text-[14px] text-dark/80 leading-relaxed mb-4">
+        {review.text}
+      </p>
+      <div>
+        <p className="text-[14px] font-bold text-dark">{review.name}</p>
+        <p className="text-[12px] text-secondary/50">{review.role}</p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Scrolling column ─── */
+function ScrollColumn({
+  reviews,
+  direction = "up",
+  duration = 40,
+}: {
+  reviews: (typeof REVIEWS)[0];
+  direction?: "up" | "down";
+  duration?: number;
+}) {
+  return (
+    <div className="overflow-hidden relative h-[600px] md:h-[700px] testimonial-mask">
+      <div
+        className={direction === "up" ? "testimonial-scroll-up" : "testimonial-scroll-down"}
+        style={{ animationDuration: `${duration}s` }}
+      >
+        {/* Double for seamless loop */}
+        {[...reviews, ...reviews].map((r, i) => (
+          <ReviewCard key={`${r.name}-${i}`} review={r} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main section ─── */
 export default function TestimonialsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const [vis, setVis] = useState(false);
 
   useEffect(() => {
     if (!ref.current) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect(); } }, { threshold: 0.2 });
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect(); } },
+      { threshold: 0.05 }
+    );
     obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
 
   return (
-    <section id="testimonianze" className="py-20 md:py-28 bg-surface" ref={ref}>
+    <section id="testimonianze" className="py-20 md:py-28 overflow-hidden bg-[#F2F4F8]" ref={ref}>
       <div className="max-w-site mx-auto px-6">
-        <div className={`text-center mb-16 reveal ${vis ? "revealed" : ""}`}>
-          <span className="inline-block text-[12px] font-semibold text-primary uppercase tracking-[0.15em] mb-3">Testimonianze</span>
-          <h2 className="font-display text-[30px] md:text-[42px] font-bold text-dark leading-[1.1] tracking-tight">
+        {/* Header */}
+        <div className={`text-center mb-14 reveal ${vis ? "revealed" : ""}`}>
+          <span className="inline-block text-[11px] font-semibold text-dark uppercase tracking-[0.08em] border border-border rounded-full px-3.5 py-1.5 mb-5">
+            Testimonianze
+          </span>
+          <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
             Lo dicono i property manager.
           </h2>
+          <div className="flex items-center justify-center gap-2.5 mt-6">
+            <div className="flex items-center gap-1.5 bg-surface border border-border rounded-full px-4 py-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#22804A" stroke="none">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <span className="text-[15px] font-bold text-dark">4.9/5</span>
+              <span className="text-[14px] text-secondary/50">da 127 recensioni</span>
+            </div>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t, i) => (
-            <div
-              key={t.name}
-              className={`bg-white rounded-2xl border border-border p-8 hover:shadow-lg transition-all duration-200 flex flex-col cursor-default reveal ${vis ? "revealed" : ""}`}
-              style={{ transitionDelay: `${i * 0.1}s` }}
-            >
-              <div className="flex gap-1 mb-5" aria-label="5 stelle su 5">
-                {[...Array(5)].map((_, j) => (
-                  <svg key={j} width="18" height="18" viewBox="0 0 24 24" fill="#FBBF24" stroke="none" aria-hidden="true">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                ))}
-              </div>
-
-              <blockquote className="text-[15px] text-dark/80 leading-relaxed flex-1">
-                &ldquo;{t.quote}&rdquo;
-              </blockquote>
-
-              <div className="flex items-center gap-3 mt-6 pt-6 border-t border-border">
-                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[13px] font-bold" aria-hidden="true">
-                  {t.initials}
-                </div>
-                <div>
-                  <p className="text-[14px] font-semibold text-dark">{t.name}</p>
-                  <p className="text-[12px] text-secondary">{t.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Scrolling columns */}
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 reveal ${vis ? "revealed" : ""}`} style={{ transitionDelay: "0.15s" }}>
+          <ScrollColumn reviews={REVIEWS[0]} direction="up" duration={45} />
+          <ScrollColumn reviews={REVIEWS[1]} direction="down" duration={50} />
+          <ScrollColumn reviews={REVIEWS[2]} direction="up" duration={42} />
+          <div className="hidden lg:block">
+            <ScrollColumn reviews={REVIEWS[3]} direction="down" duration={48} />
+          </div>
         </div>
       </div>
     </section>
