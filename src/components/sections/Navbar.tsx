@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, User } from "lucide-react";
 
 const NAV_ITEMS = [
   {
@@ -65,9 +65,21 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [merged, setMerged] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const ticking = useRef(false);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      setMobileAccordion(null);
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   // Scroll detection — merge after hero, split again on dark sections
   useEffect(() => {
@@ -125,7 +137,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-4 left-6 right-6 z-50 flex justify-center" role="navigation" aria-label="Navigazione principale">
-      <div ref={navRef} className="flex items-stretch max-w-site w-full">
+      <div ref={navRef} className="flex items-stretch max-w-site w-full relative z-[60]">
         {/* Outer spacer left — expands when merged to push pills to center */}
         <div className={`hidden md:block nav-spacer-outer ${merged ? "" : "nav-spacer-outer-hidden"}`} />
 
@@ -223,39 +235,112 @@ export default function Navbar() {
         </div>
 
         {/* Middle spacer — collapses to merge */}
-        <div className={`hidden md:block nav-spacer ${merged ? "nav-spacer-collapsed" : ""}`} />
+        <div className={`nav-spacer ${merged ? "nav-spacer-collapsed" : ""}`} />
 
         {/* ─── Right pill ─── */}
         <div
           className={`
-            hidden md:flex items-center gap-2 bg-white/90 backdrop-blur-md border border-border shadow-sm px-5 py-3
+            flex items-center gap-2 bg-white/90 backdrop-blur-md border border-border shadow-sm px-3 py-2 md:px-5 md:py-3
             nav-pill transition-all duration-500 ease-out
             ${merged ? "rounded-r-xl rounded-l-none nav-merged-right" : "rounded-xl"}
           `}
         >
-          <Link href="#" className="text-[13px] font-bold text-secondary hover:text-dark transition-colors duration-200 px-3 py-1.5 cursor-pointer">
-            Accedi
+          {/* Mobile: user icon as login */}
+          <Link href="#" className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-secondary hover:text-dark transition-colors duration-200 cursor-pointer" aria-label="Accedi">
+            <User size={18} />
           </Link>
-          <Link href="#" className="nav-cta-primary">
-            Prova gratis
-          </Link>
+          {/* Desktop: Accedi + Prova gratis */}
+          <div className="hidden md:flex items-center gap-2">
+            <Link href="#" className="text-[13px] font-bold text-secondary hover:text-dark transition-colors duration-200 px-3 py-1.5 cursor-pointer">
+              Accedi
+            </Link>
+            <Link href="#" className="nav-cta-primary">
+              Prova gratis
+            </Link>
+          </div>
         </div>
 
         {/* Outer spacer right — expands when merged to push pills to center */}
         <div className={`hidden md:block nav-spacer-outer ${merged ? "" : "nav-spacer-outer-hidden"}`} />
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile overlay menu */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-[62px] left-0 right-0 mx-4 bg-white rounded-xl border border-border shadow-lg p-4 flex flex-col gap-1">
-          {NAV_ITEMS.map((item) => (
-            <Link key={item.label} href={item.href || "#"} className="text-[14px] text-dark font-medium py-2.5 px-4 rounded-lg hover:bg-surface transition-colors duration-200 cursor-pointer" onClick={() => setMobileOpen(false)}>
-              {item.label}
-            </Link>
-          ))}
-          <hr className="border-border my-2" />
-          <Link href="#" className="nav-cta-primary text-center">Prova gratis</Link>
-        </div>
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 bg-dark/60 backdrop-blur-sm z-40"
+            onClick={() => setMobileOpen(false)}
+          />
+          {/* Panel */}
+          <div className="md:hidden fixed top-[80px] left-6 right-6 z-50 bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[calc(100vh-100px)] overflow-y-auto">
+            <div className="p-2">
+              {NAV_ITEMS.map((item) =>
+                item.megamenu ? (
+                  <div key={item.label}>
+                    <button
+                      className="w-full flex items-center justify-between text-[15px] text-dark font-semibold py-3.5 px-4 rounded-xl hover:bg-surface/80 transition-colors duration-200 cursor-pointer"
+                      onClick={() => setMobileAccordion(mobileAccordion === item.label ? null : item.label)}
+                    >
+                      {item.label}
+                      <ChevronDown
+                        size={14}
+                        className={`text-secondary/40 transition-transform duration-300 ${mobileAccordion === item.label ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-out ${
+                        mobileAccordion === item.label ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                      }`}
+                    >
+                      <div className="mx-3 mb-2 bg-surface/50 rounded-xl p-3">
+                        {item.megamenu.columns.map((col, colIdx) => (
+                          <div key={col.title} className={colIdx > 0 ? "mt-4 pt-3 border-t border-border/50" : ""}>
+                            <p className="text-[10px] font-bold text-secondary/30 uppercase tracking-[0.1em] px-2 mb-2">{col.title}</p>
+                            {col.links.map((link) => (
+                              <Link
+                                key={link.name}
+                                href="#"
+                                className="flex items-start gap-3 px-2 py-2 rounded-lg hover:bg-white transition-colors duration-150 cursor-pointer group"
+                                onClick={() => setMobileOpen(false)}
+                              >
+                                <div className="w-1 h-1 rounded-full bg-primary/40 mt-[7px] shrink-0 group-hover:bg-primary transition-colors duration-150" />
+                                <div>
+                                  <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
+                                  <p className="text-[11px] text-secondary/40 leading-relaxed">{link.desc}</p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    key={item.label}
+                    href={item.href || "#"}
+                    className="block text-[15px] text-dark font-semibold py-3.5 px-4 rounded-xl hover:bg-surface/80 transition-colors duration-200 cursor-pointer"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              )}
+            </div>
+
+            {/* CTA */}
+            <div className="p-3 pt-0">
+              <Link
+                href="#"
+                className="block w-full text-center bg-dark text-white font-semibold text-[14px] py-3 rounded-xl hover:bg-dark/90 transition-colors duration-200 cursor-pointer"
+                onClick={() => setMobileOpen(false)}
+              >
+                Inizia ora gratis
+              </Link>
+            </div>
+          </div>
+        </>
       )}
     </nav>
   );

@@ -583,13 +583,13 @@ export default function HeroSection() {
   );
 
   return (
-    <section className="relative bg-dark overflow-hidden rounded-b-[10px]">
-      <div className="max-w-site mx-auto px-6 pt-32 pb-0 md:pt-40">
+    <section className="relative bg-dark overflow-hidden rounded-b-[10px] min-h-[80vh] lg:min-h-0 flex flex-col">
+      <div className="max-w-site mx-auto px-6 pt-28 pb-16 md:pt-40 md:pb-0 flex-1 flex flex-col justify-center lg:block">
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-8 items-end">
           {/* Left — copy */}
-          <div className="pb-16 md:pb-24">
+          <div className="text-center lg:text-left lg:pb-24">
             <h1
-              className="font-display text-[38px] md:text-[50px] lg:text-[58px] font-bold text-white leading-[1.06] tracking-[-0.025em]"
+              className="font-display text-[36px] md:text-[50px] lg:text-[58px] font-bold text-white leading-[1.06] tracking-[-0.025em]"
             >
               {LINES.map((line, i) => (
                 <span key={i} className="block relative">
@@ -603,7 +603,7 @@ export default function HeroSection() {
             </h1>
 
             <p
-              className={`mt-6 text-white/50 text-[16px] md:text-[18px] max-w-[460px] leading-[1.7] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              className={`mt-6 text-white/50 text-[15px] md:text-[18px] max-w-[460px] mx-auto lg:mx-0 leading-[1.7] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
               style={{ transitionDelay: "0.1s" }}
             >
               Ci occupiamo di guasti e imprevisti al posto tuo,
@@ -612,18 +612,18 @@ export default function HeroSection() {
             </p>
 
             <div
-              className={`mt-10 flex flex-col sm:flex-row items-start gap-4 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              className={`mt-8 md:mt-10 flex flex-row items-center justify-center lg:justify-start gap-3 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
               style={{ transitionDelay: "0.2s" }}
             >
               <Link
                 href="#"
-                className="inline-flex items-center justify-center bg-white text-dark font-semibold text-[15px] rounded-[10px] px-8 py-3.5 transition-all duration-200 hover:bg-white/90 cursor-pointer"
+                className="inline-flex items-center justify-center bg-white text-dark font-semibold text-[14px] md:text-[15px] rounded-[10px] px-5 md:px-8 py-3.5 transition-all duration-200 hover:bg-white/90 cursor-pointer"
               >
                 Richiedi una demo
               </Link>
               <Link
                 href="#"
-                className="inline-flex items-center justify-center text-white font-semibold text-[15px] rounded-[10px] px-8 py-3.5 border border-white/20 hover:border-white/40 transition-all duration-200 cursor-pointer"
+                className="inline-flex items-center justify-center text-white font-semibold text-[14px] md:text-[15px] rounded-[10px] px-4 md:px-8 py-3.5 border border-white/20 hover:border-white/40 transition-all duration-200 cursor-pointer"
               >
                 Inizia ora
               </Link>
@@ -631,10 +631,10 @@ export default function HeroSection() {
 
             {/* Social proof */}
             <div
-              className={`mt-10 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              className={`mt-12 md:mt-14 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
               style={{ transitionDelay: "0.3s" }}
             >
-              <div className="flex items-center gap-[2px] mb-2">
+              <div className="flex items-center justify-center lg:justify-start gap-[2px] mb-2">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <svg key={i} width="18" height="18" viewBox="0 0 20 20">
                     <defs>
@@ -648,18 +648,18 @@ export default function HeroSection() {
                 ))}
                 <span className="text-[13px] text-white/30 ml-2">4.8 / 5</span>
               </div>
-              <p className="text-[13px] text-white/30">
+              <p className="text-[13px] text-white/30 text-center lg:text-left">
                 Scelto da <span className="text-white/60 font-medium">2.000+</span> property manager in Italia
               </p>
             </div>
           </div>
 
-          {/* Right — dashboard mockup (overflows bottom) */}
+          {/* Right — dashboard mockup (desktop only, overflows bottom) */}
           <div
-            className={`relative hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+            className={`relative hidden lg:block hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
             style={{ transitionDelay: "0.15s" }}
           >
-            <div className="translate-y-8 lg:translate-y-12">
+            <div className="translate-y-12">
               <DashboardMockup />
             </div>
           </div>
