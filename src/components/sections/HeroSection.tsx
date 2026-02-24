@@ -473,7 +473,7 @@ function DashboardMockup() {
 
   return (
     <div className="relative w-full min-w-[600px]" aria-hidden="true">
-      <div className="rounded-2xl bg-white shadow-2xl shadow-black/20 overflow-hidden border border-[#EBEBEB]">
+      <div className="rounded-2xl bg-white shadow-2xl shadow-black/10 overflow-hidden border border-[#EBEBEB]">
         <div className="flex">
           {/* Sidebar — Notion-style */}
           <div className="w-[190px] bg-[#FBFBFA] border-r border-[#EFEFEF] flex flex-col shrink-0">
@@ -567,7 +567,7 @@ export default function HeroSection() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { const t = setTimeout(() => setMounted(true), 100); return () => clearTimeout(t); }, []);
 
-  const LINES = ["Gestisci la tua", "casa, anche", "da lontano."];
+  const LINES = ["Mai più", "rincorrere", "un tecnico."];
   const FULL = LINES.join(" ");
   const { displayed, done } = useTypingEffect(FULL, 45, 400);
 
@@ -583,13 +583,13 @@ export default function HeroSection() {
   );
 
   return (
-    <section className="relative bg-dark overflow-hidden rounded-b-[10px] min-h-[80vh] lg:min-h-0 flex flex-col">
+    <section className="relative bg-white overflow-hidden rounded-b-[10px] min-h-[80vh] lg:min-h-0 flex flex-col">
       <div className="max-w-site mx-auto px-6 pt-28 pb-16 md:pt-40 md:pb-0 flex-1 flex flex-col justify-center lg:block">
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-8 items-end">
           {/* Left — copy */}
           <div className="text-center lg:text-left lg:pb-24">
             <h1
-              className="font-display text-[36px] md:text-[50px] lg:text-[58px] font-bold text-white leading-[1.06] tracking-[-0.025em]"
+              className="font-display text-[36px] md:text-[50px] lg:text-[58px] font-bold text-dark leading-[1.06] tracking-[-0.025em]"
             >
               {LINES.map((line, i) => (
                 <span key={i} className="block relative">
@@ -603,12 +603,12 @@ export default function HeroSection() {
             </h1>
 
             <p
-              className={`mt-6 text-white/50 text-[15px] md:text-[18px] max-w-[460px] mx-auto lg:mx-0 leading-[1.7] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              className={`mt-6 text-secondary text-[15px] md:text-[18px] max-w-[460px] mx-auto lg:mx-0 leading-[1.7] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
               style={{ transitionDelay: "0.1s" }}
             >
-              Ci occupiamo di guasti e imprevisti al posto tuo,
-              con tecnici selezionati e aggiornamenti in tempo reale.
-              La piattaforma per property manager.
+              Guasti e manutenzione gestiti per te, ovunque tu sia.
+              Tecnici verificati, aggiornamenti in tempo reale.
+              Tu vedi solo &ldquo;Problema risolto&rdquo;.
             </p>
 
             <div
@@ -616,16 +616,16 @@ export default function HeroSection() {
               style={{ transitionDelay: "0.2s" }}
             >
               <Link
-                href="#"
-                className="inline-flex items-center justify-center bg-white text-dark font-semibold text-[14px] md:text-[15px] rounded-[10px] px-5 md:px-8 py-3.5 transition-all duration-200 hover:bg-white/90 cursor-pointer"
+                href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
+                className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[14px] md:text-[15px] rounded-[10px] px-5 md:px-8 py-3.5 transition-all duration-200 hover:bg-primary-hover shadow-lg shadow-primary/20 cursor-pointer"
               >
-                Richiedi una demo
+                Richiedi accesso prioritario
               </Link>
               <Link
-                href="#"
-                className="inline-flex items-center justify-center text-white font-semibold text-[14px] md:text-[15px] rounded-[10px] px-4 md:px-8 py-3.5 border border-white/20 hover:border-white/40 transition-all duration-200 cursor-pointer"
+                href="#come-funziona"
+                className="inline-flex items-center justify-center text-dark font-semibold text-[14px] md:text-[15px] rounded-[10px] px-4 md:px-8 py-3.5 border border-border hover:border-dark/30 transition-all duration-200 cursor-pointer"
               >
-                Inizia ora
+                Vedi come funziona
               </Link>
             </div>
 
@@ -646,10 +646,10 @@ export default function HeroSection() {
                     <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.26 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="#05B67A" clipPath={`url(#star-clip-${i})`} />
                   </svg>
                 ))}
-                <span className="text-[13px] text-white/30 ml-2">4.8 / 5</span>
+                <span className="text-[13px] text-secondary/50 ml-2">4.8 / 5</span>
               </div>
-              <p className="text-[13px] text-white/30 text-center lg:text-left">
-                Scelto da <span className="text-white/60 font-medium">2.000+</span> property manager in Italia
+              <p className="text-[13px] text-secondary/50 text-center lg:text-left">
+                Scelto da <span className="text-dark font-medium">2.000+</span> property manager in Italia
               </p>
             </div>
           </div>

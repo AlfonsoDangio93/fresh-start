@@ -7,23 +7,24 @@ import { Menu, X, ChevronDown, User } from "lucide-react";
 const NAV_ITEMS = [
   {
     label: "Prodotto",
+    comingSoon: false,
     megamenu: {
       columns: [
         {
           title: "Funzionalità",
           links: [
-            { name: "Ticketing guasti", desc: "Gestisci segnalazioni e interventi in un unico posto" },
-            { name: "Dashboard real-time", desc: "Monitora lo stato di tutti i tuoi alloggi" },
-            { name: "Gestione tecnici", desc: "Assegna e traccia i tecnici sul campo" },
-            { name: "Report e analytics", desc: "Dati e insight per ottimizzare la manutenzione" },
+            { name: "Ticketing guasti", desc: "Gestisci segnalazioni e interventi in un unico posto", href: "/ticketing-guasti", comingSoon: false },
+            { name: "Dashboard real-time", desc: "Monitora lo stato di tutti i tuoi alloggi", href: "/dashboard-realtime", comingSoon: false },
+            { name: "Gestione tecnici", desc: "Assegna e traccia i tecnici sul campo", href: "/gestione-tecnici", comingSoon: false },
+            { name: "Report e analytics", desc: "Dati e insight per ottimizzare la manutenzione", href: "/report-analytics", comingSoon: false },
           ],
         },
         {
           title: "Soluzioni",
           links: [
-            { name: "Per property manager", desc: "Gestisci decine di alloggi senza stress" },
-            { name: "Per agenzie", desc: "Scala le operazioni di manutenzione" },
-            { name: "Per host professionali", desc: "Automatizza la gestione degli imprevisti" },
+            { name: "Per property manager", desc: "Gestisci decine di alloggi senza stress", href: "/per-property-manager", comingSoon: false },
+            { name: "Per agenzie", desc: "Scala le operazioni di manutenzione", href: "/per-agenzie", comingSoon: false },
+            { name: "Per host professionali", desc: "Automatizza la gestione degli imprevisti", href: "/per-host-professionali", comingSoon: false },
           ],
         },
       ],
@@ -31,21 +32,22 @@ const NAV_ITEMS = [
   },
   {
     label: "Risorse",
+    comingSoon: true,
     megamenu: {
       columns: [
         {
           title: "Impara",
           links: [
-            { name: "Blog", desc: "Guide e best practice per la gestione immobiliare" },
-            { name: "Centro assistenza", desc: "Documentazione e tutorial passo-passo" },
-            { name: "Webinar", desc: "Sessioni live con esperti del settore" },
+            { name: "Blog", desc: "Guide e best practice per la gestione immobiliare", href: "#", comingSoon: false },
+            { name: "Centro assistenza", desc: "Documentazione e tutorial passo-passo", href: "#", comingSoon: false },
+            { name: "Webinar", desc: "Sessioni live con esperti del settore", href: "#", comingSoon: false },
           ],
         },
         {
           title: "Community",
           links: [
-            { name: "Storie di successo", desc: "Come i nostri clienti usano Hommi" },
-            { name: "Partner", desc: "Entra nel programma partner Hommi" },
+            { name: "Storie di successo", desc: "Come i nostri clienti usano Hommi", href: "#", comingSoon: true },
+            { name: "Partner", desc: "Entra nel programma partner Hommi", href: "#", comingSoon: true },
           ],
         },
       ],
@@ -53,11 +55,13 @@ const NAV_ITEMS = [
   },
   {
     label: "Prezzi",
-    href: "#prezzi",
+    comingSoon: false,
+    href: "/prezzi",
   },
   {
     label: "FAQ",
-    href: "#faq",
+    comingSoon: false,
+    href: "/faq",
   },
 ];
 
@@ -66,6 +70,7 @@ export default function Navbar() {
   const [merged, setMerged] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const ticking = useRef(false);
@@ -137,9 +142,30 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-4 left-6 right-6 z-50 flex justify-center" role="navigation" aria-label="Navigazione principale">
-      <div ref={navRef} className="flex items-stretch max-w-site w-full relative z-[60]">
+      {/* ─── Mobile navbar ─── */}
+      <div className="md:hidden flex items-center justify-between bg-white/90 backdrop-blur-md border border-border shadow-sm rounded-xl px-4 py-3 w-full z-[60]">
+        <button
+          className="p-1.5 text-secondary cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-lg"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "Chiudi menu" : "Apri menu"}
+          aria-expanded={mobileOpen}
+        >
+          {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
+
+        <Link href="/" className="absolute left-1/2 -translate-x-1/2 cursor-pointer" aria-label="Hommi home">
+          <span className="text-[16px] font-display font-bold text-dark">Hommi</span>
+        </Link>
+
+        <Link href="#" className="p-1.5 text-secondary hover:text-dark transition-colors duration-200 cursor-pointer" aria-label="Accedi">
+          <User size={18} />
+        </Link>
+      </div>
+
+      {/* ─── Desktop pill system ─── */}
+      <div ref={navRef} className="hidden md:flex items-stretch max-w-site w-full relative z-[60]">
         {/* Outer spacer left — expands when merged to push pills to center */}
-        <div className={`hidden md:block nav-spacer-outer ${merged ? "" : "nav-spacer-outer-hidden"}`} />
+        <div className={`nav-spacer-outer ${merged ? "" : "nav-spacer-outer-hidden"}`} />
 
         {/* ─── Left pill ─── */}
         <div
@@ -159,7 +185,7 @@ export default function Navbar() {
             <span className="text-[16px] font-display font-bold text-dark">Hommi</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-8 ml-10 text-[13px] font-medium">
+          <div className="flex items-center gap-8 ml-10 text-[13px] font-medium">
             {NAV_ITEMS.map((item) => (
               <div
                 key={item.label}
@@ -190,41 +216,42 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Mobile toggle */}
-          <button
-            className="md:hidden ml-auto p-1.5 text-secondary cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-lg"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Chiudi menu" : "Apri menu"}
-            aria-expanded={mobileOpen}
-          >
-            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-
           {/* ─── Mega menu dropdown ─── */}
           {NAV_ITEMS.map((item) =>
             item.megamenu && activeMenu === item.label ? (
               <div
                 key={item.label}
-                className="absolute top-full left-0 mt-2 bg-white rounded-xl border border-border shadow-xl p-5 min-w-[480px] z-50"
+                className={`absolute top-full left-0 mt-2 bg-white rounded-xl border border-border shadow-xl p-5 min-w-[480px] z-50 ${item.comingSoon ? "cursor-none" : ""}`}
                 onMouseEnter={() => handleEnter(item.label)}
-                onMouseLeave={handleLeave}
+                onMouseLeave={() => { handleLeave(); if (item.comingSoon) setCursorPos(null); }}
+                onMouseMove={item.comingSoon ? (e) => setCursorPos({ x: e.clientX, y: e.clientY }) : undefined}
               >
                 <div className={`grid gap-8 ${item.megamenu.columns.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
                   {item.megamenu.columns.map((col) => (
                     <div key={col.title}>
                       <p className="text-[11px] font-semibold text-secondary/40 uppercase tracking-wider mb-3">{col.title}</p>
                       <div className="space-y-1">
-                        {col.links.map((link) => (
-                          <Link
-                            key={link.name}
-                            href="#"
-                            className="block px-3 py-2.5 rounded-lg hover:bg-surface transition-colors duration-150 cursor-pointer group"
-                            onClick={() => setActiveMenu(null)}
-                          >
-                            <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
-                            <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
-                          </Link>
-                        ))}
+                        {col.links.map((link) =>
+                          item.comingSoon ? (
+                            <div
+                              key={link.name}
+                              className="block px-3 py-2.5 rounded-lg cursor-none"
+                            >
+                              <p className="text-[13px] font-medium text-dark">{link.name}</p>
+                              <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
+                            </div>
+                          ) : (
+                            <Link
+                              key={link.name}
+                              href={link.href}
+                              className="block px-3 py-2.5 rounded-lg hover:bg-surface transition-colors duration-150 cursor-pointer group"
+                              onClick={() => setActiveMenu(null)}
+                            >
+                              <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
+                              <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
+                            </Link>
+                          )
+                        )}
                       </div>
                     </div>
                   ))}
@@ -240,24 +267,17 @@ export default function Navbar() {
         {/* ─── Right pill ─── */}
         <div
           className={`
-            flex items-center gap-2 bg-white/90 backdrop-blur-md border border-border shadow-sm px-3 py-2 md:px-5 md:py-3
+            flex items-center gap-2 bg-white/90 backdrop-blur-md border border-border shadow-sm px-5 py-3
             nav-pill transition-all duration-500 ease-out
             ${merged ? "rounded-r-xl rounded-l-none nav-merged-right" : "rounded-xl"}
           `}
         >
-          {/* Mobile: user icon as login */}
-          <Link href="#" className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-secondary hover:text-dark transition-colors duration-200 cursor-pointer" aria-label="Accedi">
-            <User size={18} />
+          <Link href="#" className="text-[13px] font-bold text-secondary hover:text-dark transition-colors duration-200 px-3 py-1.5 cursor-pointer">
+            Accedi
           </Link>
-          {/* Desktop: Accedi + Prova gratis */}
-          <div className="hidden md:flex items-center gap-2">
-            <Link href="#" className="text-[13px] font-bold text-secondary hover:text-dark transition-colors duration-200 px-3 py-1.5 cursor-pointer">
-              Accedi
-            </Link>
-            <Link href="#" className="nav-cta-primary">
-              Prova gratis
-            </Link>
-          </div>
+          <Link href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw" className="nav-cta-primary">
+            Richiedi accesso
+          </Link>
         </div>
 
         {/* Outer spacer right — expands when merged to push pills to center */}
@@ -278,6 +298,14 @@ export default function Navbar() {
               {NAV_ITEMS.map((item) =>
                 item.megamenu ? (
                   <div key={item.label}>
+                    {item.comingSoon ? (
+                      <div
+                        className="w-full flex items-center justify-between text-[15px] text-dark font-semibold py-3.5 px-4 rounded-xl cursor-not-allowed"
+                      >
+                        {item.label}
+                        <ChevronDown size={14} className="text-secondary/40" />
+                      </div>
+                    ) : (
                     <button
                       className="w-full flex items-center justify-between text-[15px] text-dark font-semibold py-3.5 px-4 rounded-xl hover:bg-surface/80 transition-colors duration-200 cursor-pointer"
                       onClick={() => setMobileAccordion(mobileAccordion === item.label ? null : item.label)}
@@ -288,6 +316,8 @@ export default function Navbar() {
                         className={`text-secondary/40 transition-transform duration-300 ${mobileAccordion === item.label ? "rotate-180" : ""}`}
                       />
                     </button>
+                    )}
+                    {!item.comingSoon && (
                     <div
                       className={`overflow-hidden transition-all duration-300 ease-out ${
                         mobileAccordion === item.label ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
@@ -298,23 +328,25 @@ export default function Navbar() {
                           <div key={col.title} className={colIdx > 0 ? "mt-4 pt-3 border-t border-border/50" : ""}>
                             <p className="text-[10px] font-bold text-secondary/30 uppercase tracking-[0.1em] px-2 mb-2">{col.title}</p>
                             {col.links.map((link) => (
-                              <Link
-                                key={link.name}
-                                href="#"
-                                className="flex items-start gap-3 px-2 py-2 rounded-lg hover:bg-white transition-colors duration-150 cursor-pointer group"
-                                onClick={() => setMobileOpen(false)}
-                              >
-                                <div className="w-1 h-1 rounded-full bg-primary/40 mt-[7px] shrink-0 group-hover:bg-primary transition-colors duration-150" />
-                                <div>
-                                  <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
-                                  <p className="text-[11px] text-secondary/40 leading-relaxed">{link.desc}</p>
-                                </div>
-                              </Link>
-                            ))}
+                                <Link
+                                  key={link.name}
+                                  href={link.href}
+                                  className="flex items-start gap-3 px-2 py-2 rounded-lg hover:bg-white transition-colors duration-150 cursor-pointer group"
+                                  onClick={() => setMobileOpen(false)}
+                                >
+                                  <div className="w-1 h-1 rounded-full bg-primary/40 mt-[7px] shrink-0 group-hover:bg-primary transition-colors duration-150" />
+                                  <div>
+                                    <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
+                                    <p className="text-[11px] text-secondary/40 leading-relaxed">{link.desc}</p>
+                                  </div>
+                                </Link>
+                              )
+                            )}
                           </div>
                         ))}
                       </div>
                     </div>
+                    )}
                   </div>
                 ) : (
                   <Link
@@ -332,15 +364,26 @@ export default function Navbar() {
             {/* CTA */}
             <div className="p-3 pt-0">
               <Link
-                href="#"
+                href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
                 className="block w-full text-center bg-dark text-white font-semibold text-[14px] py-3 rounded-xl hover:bg-dark/90 transition-colors duration-200 cursor-pointer"
                 onClick={() => setMobileOpen(false)}
               >
-                Inizia ora gratis
+                Richiedi accesso prioritario
               </Link>
             </div>
           </div>
         </>
+      )}
+      {/* Floating "IN ARRIVO" cursor label */}
+      {cursorPos && (
+        <div
+          className="fixed z-[9999] pointer-events-none"
+          style={{ left: cursorPos.x + 12, top: cursorPos.y - 14 }}
+        >
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-white bg-dark rounded-full px-3 py-1.5 shadow-lg whitespace-nowrap">
+            In arrivo
+          </span>
+        </div>
       )}
     </nav>
   );

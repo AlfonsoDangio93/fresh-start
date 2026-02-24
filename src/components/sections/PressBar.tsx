@@ -31,7 +31,7 @@ export default function PressBar() {
         {/* Fixed text on the left */}
         <div className="shrink-0 max-w-[200px]">
           <p className="text-[13px] md:text-[14px] text-dark font-semibold leading-snug">
-            Scelto da oltre 2.000+ property manager.
+            Scelto da 2.000+ property manager.
           </p>
           <p className="text-[11px] md:text-[12px] text-secondary/40 mt-1 leading-snug">
             Hanno parlato di noi:

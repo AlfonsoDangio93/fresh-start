@@ -208,10 +208,10 @@ export default function TestimonialsSection() {
         {/* Header */}
         <div className={`text-center mb-14 reveal ${vis ? "revealed" : ""}`}>
           <span className="inline-block text-[11px] font-semibold text-dark uppercase tracking-[0.08em] border border-border rounded-full px-3.5 py-1.5 mb-5">
-            Testimonianze
+            Recensioni
           </span>
           <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
-            Lo dicono i property manager.
+            Chi lo usa, non torna indietro.
           </h2>
           <div className="flex items-center justify-center gap-2.5 mt-6">
             <div className="flex items-center gap-1.5 bg-surface border border-border rounded-full px-4 py-2">

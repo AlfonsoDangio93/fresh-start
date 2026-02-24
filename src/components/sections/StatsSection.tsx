@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 const STATS = [
   { value: 2000, suffix: "+", label: "Alloggi gestiti" },
   { value: 15000, suffix: "+", label: "Interventi completati" },
-  { value: 97, suffix: "%", label: "Risolti in giornata" },
-  { value: 45, suffix: "min", label: "Tempo medio risposta" },
+  { value: 97, suffix: "%", label: "Risolti entro 24h" },
+  { value: 45, suffix: "min", label: "Tempo medio di risposta" },
 ];
 
 function useCountUp(target: number, duration = 2000, start: boolean) {

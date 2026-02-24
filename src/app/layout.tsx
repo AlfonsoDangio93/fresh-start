@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Open_Sans } from "next/font/google";
 import "./globals.css";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -28,7 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it" className={`${poppins.variable} ${openSans.variable}`}>
-      <body className="font-sans antialiased text-dark bg-white">{children}</body>
+      <body className="font-sans antialiased text-dark bg-white">
+        {children}
+        <ScrollToTop />
+      </body>
     </html>
   );
 }

@@ -6,21 +6,21 @@ import { useEffect, useRef, useState } from "react";
 const STEPS = [
   {
     num: "1",
-    title: "Segnala il guasto in pochi tap",
-    desc: "Apri l\u2019app, seleziona l\u2019alloggio e descrivi il problema con foto e dettagli. Niente telefonate, niente email perse. Il ticket viene creato in automatico e assegnato al team giusto.",
+    title: "Segnala il problema",
+    desc: "Apri l\u2019app, seleziona l\u2019alloggio, descrivi il guasto con foto. Il ticket viene creato e assegnato in automatico. Niente telefonate, niente email perse.",
     mockup: <StepMockup1 />,
   },
   {
     num: "2",
     title: "Noi coordiniamo tutto per te",
-    desc: "Il nostro sistema assegna automaticamente un tecnico verificato nella tua zona. Ricevi aggiornamenti in tempo reale sullo stato dell\u2019intervento, dal momento della presa in carico fino alla risoluzione.",
+    desc: "Scegliamo il tecnico pi\u00f9 adatto nella tua zona e coordiniamo ogni fase. Che tu sia in ufficio o a Londra, ricevi aggiornamenti in tempo reale senza dover chiamare nessuno.",
     mockup: <StepMockup2 />,
     reverse: true,
   },
   {
     num: "3",
     title: "Problema risolto, tutto tracciato",
-    desc: "Conferma a lavoro completato con foto e report. Storico completo degli interventi, costi e tempi. Dati sempre aggiornati e report pronti all\u2019uso per una gestione trasparente.",
+    desc: "Ricevi foto e report a lavoro completato, senza dover seguire nulla personalmente. Storico completo per ogni alloggio: costi, tempi, interventi. Tutto pronto per i proprietari.",
     mockup: <StepMockup3 />,
   },
 ];
@@ -30,7 +30,7 @@ function StepMockup1() {
   return (
     <div className="relative flex justify-center">
       {/* Main card */}
-      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/10 p-5">
+      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/8 p-5">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <p className="text-[13px] font-semibold text-dark">Nuovo ticket</p>
@@ -104,7 +104,7 @@ function StepMockup2() {
   return (
     <div className="relative flex justify-center">
       {/* Main card — list of assignments */}
-      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/10 p-5">
+      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/8 p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-[13px] font-semibold text-dark">Scadenze</p>
           <span className="text-[10px] text-secondary/40">Oggi</span>
@@ -158,7 +158,7 @@ function StepMockup3() {
   return (
     <div className="relative flex justify-center">
       {/* Main card */}
-      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/10 p-5">
+      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/8 p-5">
         <div className="flex items-center justify-between mb-4">
           <p className="text-[13px] font-semibold text-dark">Costo del personale</p>
           <div className="w-6 h-6 rounded-full bg-[#F0F0F0] flex items-center justify-center">
@@ -285,7 +285,7 @@ function StepBlock({ step, index }: { step: typeof STEPS[0]; index: number }) {
         <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center mb-5">
           <span className="text-[13px] font-semibold text-primary">{step.num}</span>
         </div>
-        <h3 className="font-display text-[24px] md:text-[30px] font-bold text-white leading-[1.15] tracking-tight mb-4">
+        <h3 className="font-display text-[24px] md:text-[30px] font-bold text-dark leading-[1.15] tracking-tight mb-4">
           <span className="relative block">
             <span className="invisible" aria-hidden="true">{step.title}</span>
             <span className="absolute inset-0">
@@ -295,7 +295,7 @@ function StepBlock({ step, index }: { step: typeof STEPS[0]; index: number }) {
             </span>
           </span>
         </h3>
-        <p className="text-[14px] md:text-[15px] text-white/50 leading-relaxed max-w-[440px]">
+        <p className="text-[14px] md:text-[15px] text-secondary leading-relaxed max-w-[440px]">
           {step.desc}
         </p>
       </div>
@@ -316,15 +316,15 @@ export default function HowItWorksSection() {
   }, []);
 
   return (
-    <section id="come-funziona" className="py-20 md:py-28 bg-dark rounded-[10px]" ref={ref}>
+    <section id="come-funziona" className="py-20 md:py-28 bg-white rounded-[10px]" ref={ref}>
       <div className="max-w-site mx-auto px-6">
         {/* Header */}
         <div className={`text-center mb-20 reveal ${vis ? "revealed" : ""}`}>
           <span className="inline-block text-[12px] font-semibold text-primary uppercase tracking-[0.15em] mb-3">Come funziona</span>
-          <h2 className="font-display text-[30px] md:text-[42px] font-bold text-white leading-[1.1] tracking-tight">
+          <h2 className="font-display text-[30px] md:text-[42px] font-bold text-dark leading-[1.1] tracking-tight">
             Tre passi. Zero pensieri.
           </h2>
-          <p className="mt-4 text-white/40 text-[16px] md:text-[18px] max-w-[480px] mx-auto leading-relaxed">
+          <p className="mt-4 text-secondary text-[16px] md:text-[18px] max-w-[480px] mx-auto leading-relaxed">
             Dalla segnalazione alla risoluzione, ci pensiamo noi.
           </p>
         </div>

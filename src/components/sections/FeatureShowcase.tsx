@@ -13,11 +13,11 @@ const FEATURES = [
         <path d="M7 16l4-8 4 4 4-6" />
       </svg>
     ),
-    title: <>Dashboard real&#8209;time per ogni alloggio</>,
+    title: <>Tutti i tuoi alloggi. Un colpo d&#8217;occhio.</>,
     bullets: [
-      "Panoramica completa: ticket aperti, tempi di risposta, costi per alloggio e trend settimanali.",
-      "Filtra per priorit\u00e0, stato o tecnico assegnato. Tutto a portata di click.",
-      "Report esportabili in PDF e CSV per una rendicontazione trasparente con i proprietari.",
+      "Ticket aperti, costi, tempi di risposta: tutto in una schermata. Basta fogli Excel e gruppi WhatsApp.",
+      "Filtra per alloggio, tecnico o priorit\u00e0. Trovi quello che cerchi in due click.",
+      "Esporta report in PDF per i proprietari. Rendicontazione trasparente, zero fatica.",
     ],
     mockup: <DashboardFeatureMockup />,
   },
@@ -28,11 +28,11 @@ const FEATURES = [
         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
       </svg>
     ),
-    title: "Ticketing centralizzato per la manutenzione",
+    title: "Un guasto mal gestito ti brucia recensioni e fatturato.",
     bullets: [
-      "Crea, assegna e traccia ticket per qualsiasi problema: da un rubinetto che perde a un elettrodomestico rotto.",
-      "Staff sul campo e addetti alle pulizie possono segnalare problemi direttamente dall\u2019app con foto, dandoti visibilit\u00e0 immediata.",
-      "Monitora lo stato di ogni intervento in tempo reale, assicurandoti che nulla venga dimenticato.",
+      "Basta messaggi a orari assurdi, preventivi che non arrivano, tecnici che spariscono. Ci pensiamo noi.",
+      "Staff e addetti segnalano dall\u2019app con foto. Tu ricevi solo la conferma: \u201cProblema risolto\u201d.",
+      "Ogni intervento tracciato dall\u2019inizio alla fine. Ospiti soddisfatti, recensioni intatte.",
     ],
     mockup: <TicketMockup />,
     reverse: true,
@@ -295,10 +295,10 @@ export default function FeatureShowcase() {
               </div>
 
               <Link
-                href="#"
+                href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
                 className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[14px] rounded-xl px-7 py-3 transition-all duration-200 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
               >
-                Richiedi una demo
+                Richiedi accesso prioritario
               </Link>
             </div>
           </div>

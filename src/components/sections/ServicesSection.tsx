@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 const SERVICES = [
   {
     title: "Ticketing guasti",
-    desc: "Segnala un problema in pochi tap. Traccia lo stato in tempo reale fino alla risoluzione.",
+    desc: "Segnala un problema in pochi tap. Segui lo stato in tempo reale fino alla chiusura.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
@@ -15,7 +15,7 @@ const SERVICES = [
   },
   {
     title: "Tecnici verificati",
-    desc: "Rete di professionisti selezionati e monitorati. Idraulici, elettricisti, fabbri, tuttofare.",
+    desc: "Professionisti selezionati nella tua zona. Idraulici, elettricisti, fabbri, tuttofare.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 3L4 7v5c0 4.4 3.4 8.5 8 9.5 4.6-1 8-5.1 8-9.5V7l-8-4z" />
@@ -25,7 +25,7 @@ const SERVICES = [
   },
   {
     title: "Dashboard real-time",
-    desc: "Panoramica completa: ticket aperti, tempi di risposta, costi per alloggio e trend.",
+    desc: "Ticket aperti, tempi, costi per alloggio. Tutto in una schermata.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 3v18h18" />
@@ -35,7 +35,7 @@ const SERVICES = [
   },
   {
     title: "Notifiche in tempo reale",
-    desc: "Ogni cambio di stato ti arriva subito. Sai sempre a che punto siamo con ogni intervento.",
+    desc: "Ogni cambio di stato ti arriva subito. Sai sempre a che punto \u00e8 l\u2019intervento.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -45,7 +45,7 @@ const SERVICES = [
   },
   {
     title: "Report e analytics",
-    desc: "Esporta report dettagliati. Costi, interventi, tempi. Tutto misurato, niente a occhio.",
+    desc: "Costi, interventi, tempi. Esporta in PDF o CSV. Tutto misurato, niente a occhio.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" />
@@ -57,7 +57,7 @@ const SERVICES = [
   },
   {
     title: "Multi-propriet\u00e0",
-    desc: "Gestisci 5 o 500 alloggi dalla stessa piattaforma. Scala senza complicazioni.",
+    desc: "5 o 500 alloggi, stessa piattaforma. Gestisci tutto da remoto, ovunque tu sia.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 10.5L12 3l9 7.5" />
@@ -68,7 +68,7 @@ const SERVICES = [
   },
   {
     title: "Calendario interventi",
-    desc: "Pianifica manutenzioni, sopralluoghi e check-out. Tutto sincronizzato in un\u2019unica vista.",
+    desc: "Manutenzioni, sopralluoghi, check-out. Tutto in un\u2019unica vista sincronizzata.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -80,7 +80,7 @@ const SERVICES = [
   },
   {
     title: "Gestione fornitori",
-    desc: "Assegna i tecnici giusti per zona e specialit\u00e0. Monitora performance e costi.",
+    desc: "Il tecnico giusto per zona e specialit\u00e0. Prezzi chiari e pre-approvati, zero sorprese.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -92,7 +92,7 @@ const SERVICES = [
   },
   {
     title: "Storico completo",
-    desc: "Ogni intervento registrato. Cerca per alloggio, data o tecnico in pochi secondi.",
+    desc: "Ogni intervento registrato. Cerca per alloggio, data o tecnico in un secondo.",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -120,7 +120,7 @@ export default function ServicesSection() {
         <div className={`flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 mb-16 reveal ${vis ? "revealed" : ""}`}>
           <div className="max-w-[700px]">
             <span className="inline-block text-[11px] font-semibold text-dark uppercase tracking-[0.08em] border border-border rounded-full px-3.5 py-1.5 mb-5">
-              Piattaforma
+              Tutto in uno
             </span>
             <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
               Tutto sotto controllo.{" "}
@@ -173,10 +173,10 @@ export default function ServicesSection() {
         {/* CTA */}
         <div className={`reveal ${vis ? "revealed" : ""}`} style={{ transitionDelay: "0.2s" }}>
           <Link
-            href="#"
+            href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
             className="inline-flex items-center justify-center bg-dark text-white font-semibold text-[14px] rounded-xl px-7 py-3.5 transition-all duration-200 hover:bg-primary hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
           >
-            Scopri di più
+            Richiedi accesso prioritario
           </Link>
         </div>
       </div>
