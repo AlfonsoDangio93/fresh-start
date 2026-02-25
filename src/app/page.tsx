@@ -5,6 +5,7 @@ import FeatureShowcase from "@/components/sections/FeatureShowcase";
 import StatsSection from "@/components/sections/StatsSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import ServicesSection from "@/components/sections/ServicesSection";
+import PeopleSection from "@/components/sections/PeopleSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
@@ -16,10 +17,11 @@ export default function Home() {
       <HeroSection />
       <PressBar />
       <FeatureShowcase />
+      <PeopleSection />
       <StatsSection />
       <HowItWorksSection />
-      <ServicesSection />
       <TestimonialsSection />
+      <ServicesSection />
       <CTASection />
       <Footer />
     </main>

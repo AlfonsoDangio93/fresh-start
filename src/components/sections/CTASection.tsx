@@ -3,15 +3,20 @@ import { ArrowRight } from "lucide-react";
 
 export default function CTASection() {
   return (
-    <section className="relative bg-dark rounded-[10px] overflow-hidden px-8 py-24 md:px-16 md:py-32 text-center">
-      <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full translate-x-1/3 -translate-y-1/3" aria-hidden="true" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full -translate-x-1/2 translate-y-1/2" aria-hidden="true" />
+    <section className="relative rounded-[10px] overflow-hidden px-8 py-24 md:px-16 md:py-32 text-center">
+      <img
+        src="https://images.unsplash.com/photo-1585704032915-c3400ca199e7?q=80&w=2970&auto=format&fit=crop"
+        alt=""
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-dark/75" aria-hidden="true" />
 
       <div className="relative z-10 max-w-site mx-auto">
         <h2 className="font-display text-[30px] md:text-[46px] font-bold text-white leading-[1.1] tracking-tight">
-          Pronto a smettere di rincorrere
+          Pronto a dormire tranquillo
           <br />
-          idraulici ed elettricisti?
+          anche con 50 alloggi?
         </h2>
         <p className="mt-5 text-white/60 text-[16px] md:text-[18px] max-w-[460px] mx-auto leading-relaxed">
           2.000+ property manager hanno gi&agrave; scelto Hommi.
