@@ -64,55 +64,6 @@ p {
   transform: translateY(0);
 }
 
-/* ═══════════════════════════════════════════════
-   Navbar — spacer merge animation
-   ═══════════════════════════════════════════════ */
-/* Middle spacer — pushes pills to edges, collapses to merge */
-.nav-spacer {
-  flex: 1 1 auto;
-  transition: flex-grow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.nav-spacer-collapsed {
-  flex-grow: 0;
-}
-
-/* Outer spacers — hidden when split, expand when merged to center pills */
-.nav-spacer-outer {
-  flex: 1 1 auto;
-  transition: flex-grow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.nav-spacer-outer-hidden {
-  flex-grow: 0;
-}
-
-/* Kill inner borders when merged — light orange separator */
-.nav-merged-left {
-  border-right: 1.5px solid rgba(241, 107, 1, 0.18) !important;
-  box-shadow: none !important;
-}
-.nav-merged-right {
-  border-left: none !important;
-  margin-left: -1px;
-  box-shadow: none !important;
-}
-
-/* Mobile — never merge, always keep pills separate */
-@media (max-width: 767px) {
-  .nav-spacer-collapsed {
-    flex-grow: 1 !important;
-  }
-  .nav-merged-left {
-    border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-  }
-  .nav-merged-right {
-    border-left: 1px solid rgba(0, 0, 0, 0.08) !important;
-    margin-left: 0 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-  }
-}
 
 /* ═══════════════════════════════════════════════
    Navbar — link hover & CTA

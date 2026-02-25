@@ -25,6 +25,7 @@ const NAV_ITEMS = [
             { name: "Per property manager", desc: "Gestisci decine di alloggi senza stress", href: "/per-property-manager", comingSoon: false },
             { name: "Per agenzie", desc: "Scala le operazioni di manutenzione", href: "/per-agenzie", comingSoon: false },
             { name: "Per host professionali", desc: "Automatizza la gestione degli imprevisti", href: "/per-host-professionali", comingSoon: false },
+            { name: "Per manutentori", desc: "Entra nella rete e ricevi incarichi", href: "/per-manutentori", comingSoon: false },
           ],
         },
       ],
@@ -69,14 +70,12 @@ const LOGOS = ["/logos/logo1.png", "/logos/logo2.png"];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [merged, setMerged] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [logoIdx, setLogoIdx] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
-  const ticking = useRef(false);
 
   // Alternate logo on each page load, persist with localStorage
   useEffect(() => {
@@ -105,41 +104,6 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  // Scroll detection — merge after hero, split again on dark sections
-  useEffect(() => {
-    const onScroll = () => {
-      if (ticking.current) return;
-      ticking.current = true;
-      requestAnimationFrame(() => {
-        const heroEl = document.querySelector("section");
-        const heroEnd = heroEl ? heroEl.offsetTop + heroEl.offsetHeight - 100 : 500;
-        const darkEl = document.getElementById("come-funziona");
-        const scrollY = window.scrollY;
-
-        if (scrollY <= heroEnd) {
-          // Still in hero — split
-          setMerged(false);
-        } else if (darkEl) {
-          const darkTop = darkEl.offsetTop - 80;
-          const darkBottom = darkEl.offsetTop + darkEl.offsetHeight - 80;
-          if (scrollY >= darkTop && scrollY <= darkBottom) {
-            // Inside dark section — split
-            setMerged(false);
-          } else {
-            setMerged(true);
-          }
-        } else {
-          setMerged(true);
-        }
-
-        ticking.current = false;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   const handleEnter = (label: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(label);
@@ -162,7 +126,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-4 left-6 right-6 z-50 flex justify-center" role="navigation" aria-label="Navigazione principale">
       {/* ─── Mobile navbar ─── */}
-      <div className="md:hidden flex items-center justify-between bg-white/90 backdrop-blur-md border border-border shadow-sm rounded-xl px-4 py-3 w-full z-[60]">
+      <div className="md:hidden flex items-center justify-between bg-white border border-border shadow-sm rounded-xl px-4 py-3 w-full z-[60]">
         <button
           className="p-1.5 text-secondary cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 rounded-lg"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -173,7 +137,7 @@ export default function Navbar() {
         </button>
 
         <button onClick={toggleLogo} className="absolute left-1/2 -translate-x-1/2 cursor-pointer" aria-label="Cambia logo Hommi">
-          <img src={LOGOS[logoIdx]} alt="Hommi" className="h-9 w-auto" />
+          <img src={LOGOS[logoIdx]} alt="Hommi" className="h-12 w-auto" />
         </button>
 
         <Link href="#" className="p-1.5 text-secondary hover:text-dark transition-colors duration-200 cursor-pointer" aria-label="Accedi">
@@ -181,120 +145,95 @@ export default function Navbar() {
         </Link>
       </div>
 
-      {/* ─── Desktop pill system ─── */}
-      <div ref={navRef} className="hidden md:flex items-stretch max-w-site w-full relative z-[60]">
-        {/* Outer spacer left — expands when merged to push pills to center */}
-        <div className={`nav-spacer-outer ${merged ? "" : "nav-spacer-outer-hidden"}`} />
+      {/* ─── Desktop navbar ─── */}
+      <div ref={navRef} className="hidden md:flex items-center w-full bg-white border border-border shadow-sm rounded-xl px-6 py-3 relative z-[60]">
+        {/* Logo — left */}
+        <button onClick={toggleLogo} className="flex items-center cursor-pointer shrink-0" aria-label="Cambia logo Hommi">
+          <img src={LOGOS[logoIdx]} alt="Hommi" className="h-10 w-auto" />
+        </button>
 
-        {/* ─── Left pill ─── */}
-        <div
-          className={`
-            relative flex items-center bg-white/90 backdrop-blur-md border border-border shadow-sm px-5 py-3
-            nav-pill transition-all duration-500 ease-out
-            ${merged ? "rounded-l-xl rounded-r-none nav-merged-left" : "rounded-xl"}
-          `}
-        >
-          <button onClick={toggleLogo} className="flex items-center cursor-pointer shrink-0" aria-label="Cambia logo Hommi">
-            <img src={LOGOS[logoIdx]} alt="Hommi" className="h-10 w-auto" />
-          </button>
+        {/* Nav items — center */}
+        <div className="flex-1 flex items-center justify-center gap-8 text-[13px] font-medium">
+          {NAV_ITEMS.map((item) => (
+            <div
+              key={item.label}
+              className="relative"
+              onMouseEnter={() => item.megamenu && handleEnter(item.label)}
+              onMouseLeave={handleLeave}
+            >
+              {item.href ? (
+                <Link
+                  href={item.href}
+                  className="nav-link nav-link-light flex items-center gap-1"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  className="nav-link nav-link-light flex items-center gap-1"
+                  onClick={() => setActiveMenu(activeMenu === item.label ? null : item.label)}
+                >
+                  {item.label}
+                  <ChevronDown
+                    size={12}
+                    className={`transition-transform duration-200 ${activeMenu === item.label ? "rotate-180" : ""}`}
+                  />
+                </button>
+              )}
 
-          <div className="flex items-center gap-8 ml-10 text-[13px] font-medium">
-            {NAV_ITEMS.map((item) => (
-              <div
-                key={item.label}
-                className="relative"
-                onMouseEnter={() => item.megamenu && handleEnter(item.label)}
-                onMouseLeave={handleLeave}
-              >
-                {item.href ? (
-                  <Link
-                    href={item.href}
-                    className="nav-link nav-link-light flex items-center gap-1"
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <button
-                    className="nav-link nav-link-light flex items-center gap-1"
-                    onClick={() => setActiveMenu(activeMenu === item.label ? null : item.label)}
-                  >
-                    {item.label}
-                    <ChevronDown
-                      size={12}
-                      className={`transition-transform duration-200 ${activeMenu === item.label ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* ─── Mega menu dropdown ─── */}
-          {NAV_ITEMS.map((item) =>
-            item.megamenu && activeMenu === item.label ? (
-              <div
-                key={item.label}
-                className={`absolute top-full left-0 mt-2 bg-white rounded-xl border border-border shadow-xl p-5 min-w-[480px] z-50 ${item.comingSoon ? "cursor-none" : ""}`}
-                onMouseEnter={() => handleEnter(item.label)}
-                onMouseLeave={() => { handleLeave(); if (item.comingSoon) setCursorPos(null); }}
-                onMouseMove={item.comingSoon ? (e) => setCursorPos({ x: e.clientX, y: e.clientY }) : undefined}
-              >
-                <div className={`grid gap-8 ${item.megamenu.columns.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
-                  {item.megamenu.columns.map((col) => (
-                    <div key={col.title}>
-                      <p className="text-[11px] font-semibold text-secondary/40 uppercase tracking-wider mb-3">{col.title}</p>
-                      <div className="space-y-1">
-                        {col.links.map((link) =>
-                          item.comingSoon ? (
-                            <div
-                              key={link.name}
-                              className="block px-3 py-2.5 rounded-lg cursor-none"
-                            >
-                              <p className="text-[13px] font-medium text-dark">{link.name}</p>
-                              <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
-                            </div>
-                          ) : (
-                            <Link
-                              key={link.name}
-                              href={link.href}
-                              className="block px-3 py-2.5 rounded-lg hover:bg-surface transition-colors duration-150 cursor-pointer group"
-                              onClick={() => setActiveMenu(null)}
-                            >
-                              <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
-                              <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
-                            </Link>
-                          )
-                        )}
+              {/* ─── Mega menu dropdown ─── */}
+              {item.megamenu && activeMenu === item.label && (
+                <div
+                  className={`absolute top-full left-1/2 -translate-x-1/2 mt-4 bg-white rounded-xl border border-border shadow-xl p-5 min-w-[480px] z-50 ${item.comingSoon ? "cursor-none" : ""}`}
+                  onMouseEnter={() => handleEnter(item.label)}
+                  onMouseLeave={() => { handleLeave(); if (item.comingSoon) setCursorPos(null); }}
+                  onMouseMove={item.comingSoon ? (e) => setCursorPos({ x: e.clientX, y: e.clientY }) : undefined}
+                >
+                  <div className={`grid gap-8 ${item.megamenu.columns.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                    {item.megamenu.columns.map((col) => (
+                      <div key={col.title}>
+                        <p className="text-[11px] font-semibold text-secondary/40 uppercase tracking-wider mb-3">{col.title}</p>
+                        <div className="space-y-1">
+                          {col.links.map((link) =>
+                            item.comingSoon ? (
+                              <div
+                                key={link.name}
+                                className="block px-3 py-2.5 rounded-lg cursor-none"
+                              >
+                                <p className="text-[13px] font-medium text-dark">{link.name}</p>
+                                <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
+                              </div>
+                            ) : (
+                              <Link
+                                key={link.name}
+                                href={link.href}
+                                className="block px-3 py-2.5 rounded-lg hover:bg-surface transition-colors duration-150 cursor-pointer group"
+                                onClick={() => setActiveMenu(null)}
+                              >
+                                <p className="text-[13px] font-medium text-dark group-hover:text-primary transition-colors duration-150">{link.name}</p>
+                                <p className="text-[12px] text-secondary/50 mt-0.5 leading-relaxed">{link.desc}</p>
+                              </Link>
+                            )
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : null
-          )}
+              )}
+            </div>
+          ))}
         </div>
 
-        {/* Middle spacer — collapses to merge */}
-        <div className={`nav-spacer ${merged ? "nav-spacer-collapsed" : ""}`} />
-
-        {/* ─── Right pill ─── */}
-        <div
-          className={`
-            flex items-center gap-2 bg-white/90 backdrop-blur-md border border-border shadow-sm px-5 py-3
-            nav-pill transition-all duration-500 ease-out
-            ${merged ? "rounded-r-xl rounded-l-none nav-merged-right" : "rounded-xl"}
-          `}
-        >
-          <Link href="#" className="text-[13px] font-bold text-secondary hover:text-dark transition-colors duration-200 px-3 py-1.5 cursor-pointer">
+        {/* Actions — right */}
+        <div className="flex items-center gap-3 shrink-0">
+          <Link href="#" className="text-[13px] font-semibold text-secondary hover:text-dark transition-colors duration-200 px-3 py-1.5 border border-border rounded-lg cursor-pointer">
             Accedi
           </Link>
-          <Link href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw" className="nav-cta-primary">
+          <Link href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw" className="text-[13px] font-semibold text-white bg-dark hover:bg-dark/90 transition-colors duration-200 px-4 py-1.5 rounded-lg cursor-pointer">
             Richiedi accesso
           </Link>
         </div>
-
-        {/* Outer spacer right — expands when merged to push pills to center */}
-        <div className={`hidden md:block nav-spacer-outer ${merged ? "" : "nav-spacer-outer-hidden"}`} />
       </div>
 
       {/* Mobile overlay menu */}
