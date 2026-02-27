@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import TypingHeading from "@/components/TypingHeading";
+import AnimatedSteps from "@/components/AnimatedSteps";
 
 /* ─── How-it-works steps ─── */
 const STEPS = [
@@ -242,11 +244,7 @@ export default function DashboardSection() {
         <span className="inline-block text-[11px] font-semibold text-primary uppercase tracking-[0.12em] mb-5">
           Dashboard
         </span>
-        <h1 className="font-display text-[32px] md:text-[46px] lg:text-[52px] font-bold text-dark leading-[1.08] tracking-tight">
-          Tutti i tuoi alloggi.{" "}
-          <br className="hidden md:block" />
-          Un colpo d&apos;occhio.
-        </h1>
+        <TypingHeading lines={["Tutti i tuoi alloggi.", "Un colpo d'occhio."]} />
         <p className="mt-5 text-secondary text-[16px] md:text-[18px] max-w-[560px] mx-auto leading-relaxed">
           Ticket aperti, costi, tempi di risposta: tutto in una schermata.
           Basta fogli Excel e gruppi WhatsApp.
@@ -304,22 +302,7 @@ export default function DashboardSection() {
           </p>
         </div>
 
-        <div className={`grid md:grid-cols-3 gap-8 max-w-[900px] mx-auto reveal ${vis ? "revealed" : ""}`} style={{ transitionDelay: "0.1s" }}>
-          {STEPS.map((step, i) => (
-            <div key={step.num} className="relative text-center" style={{ transitionDelay: `${i * 0.1}s` }}>
-              {i < STEPS.length - 1 && (
-                <div className="hidden md:block absolute top-7 left-[calc(50%+32px)] w-[calc(100%-64px)] h-px bg-border" />
-              )}
-
-              <div className="w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center mx-auto mb-4">
-                {step.icon}
-              </div>
-              <span className="text-[11px] font-bold text-primary/40 uppercase tracking-wider">{step.num}</span>
-              <h3 className="font-display text-[17px] font-bold text-dark mt-1 mb-2">{step.title}</h3>
-              <p className="text-[13px] text-secondary leading-relaxed max-w-[280px] mx-auto">{step.desc}</p>
-            </div>
-          ))}
-        </div>
+        <AnimatedSteps steps={STEPS} />
       </div>
 
       {/* ─── Vantaggi ─── */}

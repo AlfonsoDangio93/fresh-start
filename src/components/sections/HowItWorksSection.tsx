@@ -1,339 +1,423 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState, useCallback } from "react";
+import TypingHeading from "@/components/TypingHeading";
+import {
+  UserCheck,
+  BookOpen,
+  Timer,
+  KeyRound,
+  Zap,
+  Eye,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
-/* ─── Step data ─── */
-const STEPS = [
+const CTA_URL =
+  "https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw";
+
+const FEATURES = [
   {
-    num: "1",
-    title: "Segnala il problema",
-    desc: "Apri l\u2019app, seleziona l\u2019alloggio, descrivi il guasto con foto. Il ticket viene creato e assegnato in automatico. Niente telefonate, niente email perse.",
-    mockup: <StepMockup1 />,
+    icon: UserCheck,
+    title: "Tecnico dedicato, davvero.",
+    desc: "Ogni proprietà ha sempre lo stesso professionista assegnato. Se è assente, subentra un backup che conosce già l\u2019immobile.",
+    visual: "technician",
   },
   {
-    num: "2",
-    title: "Noi coordiniamo tutto per te",
-    desc: "Scegliamo il tecnico pi\u00f9 adatto nella tua zona e coordiniamo ogni fase. Che tu sia in ufficio o a Londra, ricevi aggiornamenti in tempo reale senza dover chiamare nessuno.",
-    mockup: <StepMockup2 />,
-    reverse: true,
+    icon: BookOpen,
+    title: "Ogni casa ha il suo manuale tecnico.",
+    desc: "Creiamo un profilo dettagliato con sopralluogo iniziale e mappatura degli impianti. Quando c\u2019è un problema, non si parte mai da zero.",
+    visual: "dashboard",
   },
   {
-    num: "3",
-    title: "Problema risolto, tutto tracciato",
-    desc: "Ricevi foto e report a lavoro completato, senza dover seguire nulla personalmente. Storico completo per ogni alloggio: costi, tempi, interventi. Tutto pronto per i proprietari.",
-    mockup: <StepMockup3 />,
+    icon: Timer,
+    title: "Apri un ticket in 10 secondi.",
+    desc: "Scegli la proprietà, scrivi due righe, aggiungi una foto. Fatto. Nessuna telefonata, nessun follow-up.",
+    visual: "ticket",
+  },
+  {
+    icon: KeyRound,
+    title: "Gestiamo noi l\u2019accesso.",
+    desc: "Contattiamo ospiti o referenti per entrare nell\u2019immobile. Tu puoi restare offline.",
+    visual: "access",
+  },
+  {
+    icon: Zap,
+    title: "Risolviamo in giornata.",
+    desc: "Il tecnico arriva entro 4 ore. Se serve uno specialista, ricevi un preventivo via app prima di approvare.",
+    visual: "speed",
+  },
+  {
+    icon: Eye,
+    title: "Controllo totale, senza muovere un dito.",
+    desc: "Foto, stato lavori, costi e tempi: tutto tracciato. Ricevi conferma finale e report. Fine.",
+    visual: "control",
   },
 ];
 
-/* ─── Mockup 1: Ticket creation (phone) ─── */
-function StepMockup1() {
+/* ── Mini CSS-only mockup illustrations ── */
+
+function TechnicianVisual() {
   return (
-    <div className="relative flex justify-center">
-      {/* Main card */}
-      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/8 p-5">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-[13px] font-semibold text-dark">Nuovo ticket</p>
-          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-            <span className="text-[12px] text-primary">+</span>
-          </div>
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative">
+        <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+          <UserCheck size={32} className="text-primary" />
         </div>
-
-        {/* Form fields */}
-        <div className="space-y-3">
-          <div className="bg-[#FAFAFA] rounded-xl p-3 border border-[#F0F0F0]">
-            <p className="text-[9px] text-secondary/40 uppercase tracking-wider mb-1">Alloggio</p>
-            <p className="text-[12px] text-dark font-medium">Via Roma 12, Milano</p>
-          </div>
-          <div className="bg-[#FAFAFA] rounded-xl p-3 border border-[#F0F0F0]">
-            <p className="text-[9px] text-secondary/40 uppercase tracking-wider mb-1">Problema</p>
-            <p className="text-[12px] text-dark font-medium">Perdita rubinetto bagno</p>
-          </div>
-          <div className="bg-[#FAFAFA] rounded-xl p-3 border border-[#F0F0F0]">
-            <p className="text-[9px] text-secondary/40 uppercase tracking-wider mb-1">Priorit&agrave;</p>
-            <div className="flex gap-2 mt-1">
-              <span className="px-2.5 py-1 rounded-lg bg-red-500/20 text-red-400 text-[9px] font-semibold">Urgente</span>
-              <span className="px-2.5 py-1 rounded-lg bg-[#F0F0F0] text-secondary/50 text-[9px] font-medium">Alta</span>
-              <span className="px-2.5 py-1 rounded-lg bg-[#F0F0F0] text-secondary/50 text-[9px] font-medium">Media</span>
-            </div>
-          </div>
-          <div className="bg-[#FAFAFA] rounded-xl p-3 border border-[#F0F0F0]">
-            <p className="text-[9px] text-secondary/40 uppercase tracking-wider mb-1">Foto</p>
-            <div className="flex gap-2 mt-1">
-              <div className="w-10 h-10 rounded-lg bg-[#F0F0F0] flex items-center justify-center">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#344966" strokeWidth="1.5" opacity="0.35">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <path d="M21 15l-5-5L5 21" />
-                </svg>
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-[#F0F0F0] flex items-center justify-center">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#344966" strokeWidth="1.5" opacity="0.35">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <path d="M21 15l-5-5L5 21" />
-                </svg>
-              </div>
-              <div className="w-10 h-10 rounded-lg border border-dashed border-[#E0E0E0] flex items-center justify-center">
-                <span className="text-secondary/25 text-[14px]">+</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA */}
-        <div className="mt-4 w-full py-2.5 bg-primary rounded-xl text-center text-[11px] font-semibold text-white">
-          Invia segnalazione
+        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+          <span className="text-white text-[10px] font-bold">&#10003;</span>
         </div>
       </div>
-
-      {/* Floating card */}
-      <div className="absolute -bottom-3 -right-2 w-[160px] bg-white rounded-xl border border-[#EBEBEB] shadow-lg shadow-black/8 p-3">
-        <div className="flex items-center gap-2 mb-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          <p className="text-[9px] text-green-400 font-medium">Ticket creato</p>
-        </div>
-        <p className="text-[8px] text-secondary/50">Assegnazione automatica in corso...</p>
+      <div className="absolute bottom-4 left-4 right-4 flex gap-2 justify-center">
+        {["App. Milano 1", "App. Roma 3", "App. Torino"].map((name) => (
+          <div
+            key={name}
+            className="bg-white/80 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-[9px] font-medium text-dark shadow-sm border border-white/50"
+          >
+            {name}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ─── Mockup 2: Coordination / tracking ─── */
-function StepMockup2() {
+function DashboardVisual() {
   return (
-    <div className="relative flex justify-center">
-      {/* Main card — list of assignments */}
-      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/8 p-5">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-[13px] font-semibold text-dark">Scadenze</p>
-          <span className="text-[10px] text-secondary/40">Oggi</span>
+    <div className="relative w-full h-full flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-lg border border-border/60 w-full max-w-[220px] overflow-hidden">
+        <div className="bg-primary/10 px-3 py-2 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary" />
+          <span className="text-[10px] font-semibold text-dark">Dashboard Tecnica</span>
         </div>
-
-        <div className="space-y-2.5">
-          {[
-            { name: "Perdita rubinetto bagno", tech: "M. Bianchi", status: "In arrivo", statusColor: "text-amber-400", dot: "bg-amber-400", time: "Domani" },
-            { name: "Caldaia guasta", tech: "L. Verdi", status: "In corso", statusColor: "text-primary", dot: "bg-primary", time: "Tra 2 giorni" },
-            { name: "Serratura rotta", tech: "S. Ferri", status: "Assegnato", statusColor: "text-blue-400", dot: "bg-blue-400", time: "Marted\u00ec" },
-          ].map((item, i) => (
-            <div key={i} className="bg-[#FAFAFA] rounded-xl p-3 border border-[#F0F0F0]">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#F0F0F0] flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#344966" strokeWidth="1.5" opacity="0.5">
-                      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-dark font-medium">{item.name}</p>
-                    <p className="text-[9px] text-secondary/40">{item.tech}</p>
-                  </div>
+        <div className="p-3 space-y-2">
+          <div className="text-[9px] font-semibold text-dark uppercase tracking-wide">Tutto ok</div>
+          <div className="bg-surface rounded-lg p-2 space-y-1.5">
+            {[
+              { label: "Impianto idraulico", ok: true },
+              { label: "Impianto elettrico", ok: true },
+              { label: "Caldaia", ok: true },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between">
+                <span className="text-[8px] text-secondary">{item.label}</span>
+                <div className="w-3.5 h-3.5 rounded-full bg-green-100 flex items-center justify-center">
+                  <span className="text-green-600 text-[7px]">&#10003;</span>
                 </div>
-                <span className="text-[9px] text-secondary/30 shrink-0">{item.time}</span>
               </div>
-              <div className="flex items-center gap-1.5 mt-2">
-                <div className={`w-1.5 h-1.5 rounded-full ${item.dot}`} />
-                <span className={`text-[9px] font-medium ${item.statusColor}`}>{item.status}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Floating chat bubble */}
-      <div className="absolute -top-2 -right-4 w-[170px] bg-white rounded-xl border border-[#EBEBEB] shadow-lg shadow-black/8 p-3">
-        <p className="text-[9px] text-secondary/60 mb-1">Aggiornamento</p>
-        <p className="text-[10px] text-dark font-medium">Il tecnico &egrave; in arrivo, ETA 15 min</p>
-        <div className="flex items-center gap-1.5 mt-1.5">
-          <div className="w-4 h-4 rounded-full bg-primary/30 flex items-center justify-center text-[7px] font-bold text-primary">MB</div>
-          <p className="text-[8px] text-secondary/40">Marco Bianchi</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Mockup 3: Report / completion ─── */
-function StepMockup3() {
-  return (
-    <div className="relative flex justify-center">
-      {/* Main card */}
-      <div className="w-[300px] bg-white rounded-2xl border border-[#EBEBEB] shadow-xl shadow-black/8 p-5">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-[13px] font-semibold text-dark">Costo del personale</p>
-          <div className="w-6 h-6 rounded-full bg-[#F0F0F0] flex items-center justify-center">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#344966" strokeWidth="1.5" opacity="0.4">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
+            ))}
           </div>
         </div>
-
-        {/* Bar chart */}
-        <div className="flex items-end gap-2.5 h-[120px] mb-2">
-          {[
-            { label: "Gen", h: 45 },
-            { label: "Feb", h: 60 },
-            { label: "Mar", h: 80, active: true },
-            { label: "Apr", h: 55 },
-            { label: "Mag", h: 70 },
-            { label: "Giu", h: 40 },
-          ].map((bar) => (
-            <div key={bar.label} className="flex-1 flex flex-col items-center gap-1">
-              {bar.active && (
-                <div className="bg-[#F0F0F0] rounded px-1.5 py-0.5 mb-1">
-                  <p className="text-[8px] text-dark/70 font-medium">&euro; 2.450</p>
-                </div>
-              )}
-              <div
-                className={`w-full rounded-t ${bar.active ? "bg-primary" : "bg-primary/20"}`}
-                style={{ height: `${bar.h}%` }}
-              />
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-between px-1 text-[8px] text-secondary/30">
-          <span>Gen</span><span>Feb</span><span className="text-primary font-medium">Mar</span><span>Apr</span><span>Mag</span><span>Giu</span>
-        </div>
-
-        {/* Summary stats */}
-        <div className="grid grid-cols-2 gap-2.5 mt-4">
-          {[
-            { label: "Risoluzione", val: "97%", sub: "+2%" },
-            { label: "Tempo medio", val: "43m", sub: "-12m" },
-          ].map((s) => (
-            <div key={s.label} className="bg-[#FAFAFA] rounded-xl p-2.5 border border-[#F0F0F0]">
-              <p className="text-[8px] text-secondary/40 uppercase tracking-wider mb-0.5">{s.label}</p>
-              <p className="text-[16px] font-bold text-dark leading-none">{s.val}</p>
-              <p className="text-[8px] text-green-400 mt-0.5">{s.sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Floating card */}
-      <div className="absolute -bottom-3 -left-2 w-[155px] bg-white rounded-xl border border-[#EBEBEB] shadow-lg shadow-black/8 p-3">
-        <div className="flex items-center gap-2 mb-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-          <p className="text-[9px] text-primary font-medium">Report pronto</p>
-        </div>
-        <p className="text-[8px] text-secondary/50">Esporta in PDF o CSV</p>
       </div>
     </div>
   );
 }
 
-/* ─── Typing effect for step titles ─── */
-function useStepTyping(text: string, inView: boolean, speed = 40) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-  const started = useRef(false);
-
-  useEffect(() => {
-    if (!inView || started.current) return;
-    started.current = true;
-    let idx = 0;
-    const interval = setInterval(() => {
-      idx++;
-      setDisplayed(text.slice(0, idx));
-      if (idx >= text.length) {
-        clearInterval(interval);
-        setDone(true);
-      }
-    }, speed);
-    return () => clearInterval(interval);
-  }, [inView, text, speed]);
-
-  return { displayed, done };
-}
-
-/* ─── Single step block ─── */
-function StepBlock({ step, index }: { step: typeof STEPS[0]; index: number }) {
-  const blockRef = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    if (!blockRef.current) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
-      { threshold: 0.3 }
-    );
-    obs.observe(blockRef.current);
-    return () => obs.disconnect();
-  }, []);
-
-  const { displayed, done } = useStepTyping(step.title, inView, 40);
-
-  const cursor = (
-    <span className={`inline-block w-[3px] h-[0.85em] bg-primary ml-1 align-baseline relative top-[0.05em] ${done ? "animate-blink" : ""}`} />
-  );
-
+function TicketVisual() {
   return (
-    <div
-      ref={blockRef}
-      className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center reveal ${inView ? "revealed" : ""}`}
-      style={{ transitionDelay: `${index * 0.15}s` }}
-    >
-      {/* Mockup */}
-      <div className={`flex justify-center ${step.reverse ? "lg:order-2" : ""}`}>
-        {step.mockup}
-      </div>
-
-      {/* Text */}
-      <div className={step.reverse ? "lg:order-1" : ""}>
-        <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center mb-5">
-          <span className="text-[13px] font-semibold text-primary">{step.num}</span>
+    <div className="relative w-full h-full flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-lg border border-border/60 w-full max-w-[200px] overflow-hidden">
+        <div className="px-4 pt-3 pb-2">
+          <span className="text-[11px] font-bold text-dark">Apri ticket</span>
         </div>
-        <h3 className="font-display text-[24px] md:text-[30px] font-bold text-dark leading-[1.15] tracking-tight mb-4">
-          <span className="relative block">
-            <span className="invisible" aria-hidden="true">{step.title}</span>
-            <span className="absolute inset-0">
-              {displayed}
-              {!done && cursor}
-              {done && cursor}
-            </span>
-          </span>
-        </h3>
-        <p className="text-[14px] md:text-[15px] text-secondary leading-relaxed max-w-[440px]">
-          {step.desc}
-        </p>
+        <div className="px-4 pb-3 space-y-2">
+          <div className="bg-surface rounded-lg px-2.5 py-2 text-[9px] text-secondary flex justify-between items-center">
+            <span>Appartamento Milano 2</span>
+            <ChevronRight size={10} className="text-secondary/40" />
+          </div>
+          <div className="bg-surface rounded-lg px-2.5 py-2 text-[9px] text-secondary/60">
+            lavandino intasato
+          </div>
+          <div className="bg-primary rounded-lg px-3 py-2 text-center">
+            <span className="text-[10px] font-semibold text-white">Invia ticket</span>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-/* ─── Main section ─── */
+function AccessVisual() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative">
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <KeyRound size={30} className="text-primary" />
+        </div>
+      </div>
+      <div className="absolute top-4 right-4 space-y-1.5">
+        <div className="bg-white rounded-xl rounded-tr-sm px-3 py-1.5 shadow-sm border border-border/40 text-[8px] text-dark">
+          Ospite avvisato &#10003;
+        </div>
+        <div className="bg-primary/10 rounded-xl rounded-tr-sm px-3 py-1.5 text-[8px] text-primary ml-4">
+          Accesso confermato
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SpeedVisual() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative w-20 h-20">
+        <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
+          <circle cx="40" cy="40" r="35" fill="none" stroke="#F7F7F7" strokeWidth="4" />
+          <circle
+            cx="40"
+            cy="40"
+            r="35"
+            fill="none"
+            stroke="#F16B01"
+            strokeWidth="4"
+            strokeDasharray="220"
+            strokeDashoffset="55"
+            strokeLinecap="round"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-[18px] font-bold text-dark leading-none">4h</span>
+          <span className="text-[8px] text-secondary mt-0.5">max</span>
+        </div>
+      </div>
+      <div className="absolute bottom-4 left-4 right-4 flex justify-center">
+        <div className="bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm border border-white/50 flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="text-[9px] font-medium text-dark">Tecnico in arrivo</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ControlVisual() {
+  return (
+    <div className="relative w-full h-full flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-lg border border-border/60 w-full max-w-[200px] overflow-hidden">
+        <div className="px-3 pt-3 pb-1">
+          <span className="text-[10px] font-bold text-dark">Report intervento</span>
+        </div>
+        <div className="px-3 pb-3 space-y-1.5">
+          {[
+            { label: "Foto prima", status: "\u2713" },
+            { label: "Intervento", status: "\u2713" },
+            { label: "Foto dopo", status: "\u2713" },
+            { label: "Costo finale", status: "\u20AC85" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="flex items-center justify-between bg-surface rounded-lg px-2.5 py-1.5"
+            >
+              <span className="text-[8px] text-secondary">{item.label}</span>
+              <span className="text-[8px] font-semibold text-primary">{item.status}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const VISUAL_MAP: Record<string, React.FC> = {
+  technician: TechnicianVisual,
+  dashboard: DashboardVisual,
+  ticket: TicketVisual,
+  access: AccessVisual,
+  speed: SpeedVisual,
+  control: ControlVisual,
+};
+
 export default function HowItWorksSection() {
   const ref = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [vis, setVis] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     if (!ref.current) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect(); } }, { threshold: 0.1 });
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setVis(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
     obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 10);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+    // Track active card index
+    const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 10;
+    if (atEnd) {
+      setActiveIndex(FEATURES.length - 1);
+    } else {
+      const card = el.querySelector<HTMLElement>("[data-card]");
+      if (card) {
+        const cardW = card.offsetWidth + 24;
+        const idx = Math.round(el.scrollLeft / cardW);
+        setActiveIndex(Math.min(idx, FEATURES.length - 1));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, [checkScroll]);
+
+  const scroll = (dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const cardWidth = el.querySelector<HTMLElement>("[data-card]")?.offsetWidth ?? 340;
+    el.scrollBy({
+      left: dir === "right" ? cardWidth + 24 : -(cardWidth + 24),
+      behavior: "smooth",
+    });
+  };
+
+  const scrollToIndex = (idx: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-card]");
+    if (!card) return;
+    const cardW = card.offsetWidth + 24;
+    el.scrollTo({ left: cardW * idx, behavior: "smooth" });
+  };
 
   return (
     <section id="come-funziona" className="py-20 md:py-28 bg-white rounded-[10px]" ref={ref}>
       <div className="max-w-site mx-auto px-6">
         {/* Header */}
-        <div className={`text-center mb-20 reveal ${vis ? "revealed" : ""}`}>
-          <span className="inline-block text-[12px] font-semibold text-primary uppercase tracking-[0.15em] mb-3">Come funziona</span>
-          <h2 className="font-display text-[30px] md:text-[42px] font-bold text-dark leading-[1.1] tracking-tight">
-            Tre passi. Zero pensieri.
-          </h2>
-          <p className="mt-4 text-secondary text-[16px] md:text-[18px] max-w-[480px] mx-auto leading-relaxed">
-            Dalla segnalazione alla risoluzione, ci pensiamo noi.
-          </p>
+        <div className={`text-center mb-14 reveal ${vis ? "revealed" : ""}`}>
+          <span className="inline-block text-[12px] font-semibold text-primary uppercase tracking-[0.15em] mb-3">
+            Come funziona
+          </span>
+          {vis ? (
+            <TypingHeading
+              lines={["La gestione di 10 appartamenti.", "Con la semplicità di 1."]}
+              className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight"
+              speed={40}
+              startDelay={200}
+            />
+          ) : (
+            <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
+              <span className="block invisible">La gestione di 10 appartamenti.</span>
+              <span className="block invisible">Con la semplicità di 1.</span>
+            </h2>
+          )}
         </div>
 
-        {/* Steps */}
-        <div className="space-y-20 md:space-y-28">
-          {STEPS.map((step, i) => (
-            <StepBlock key={step.num} step={step} index={i} />
-          ))}
+        {/* Carousel */}
+        <div
+          className={`relative mb-12 reveal ${vis ? "revealed" : ""}`}
+          style={{ transitionDelay: "0.1s" }}
+        >
+          {/* Nav arrows */}
+          <button
+            onClick={() => scroll("left")}
+            className={`hidden md:flex absolute -left-5 top-[110px] z-10 w-10 h-10 rounded-full bg-white border border-border shadow-md items-center justify-center transition-opacity duration-200 ${
+              canScrollLeft
+                ? "opacity-100 hover:border-primary/30"
+                : "opacity-0 pointer-events-none"
+            }`}
+            aria-label="Scorri a sinistra"
+          >
+            <ChevronLeft size={18} className="text-dark" />
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className={`hidden md:flex absolute -right-5 top-[110px] z-10 w-10 h-10 rounded-full bg-white border border-border shadow-md items-center justify-center transition-opacity duration-200 ${
+              canScrollRight
+                ? "opacity-100 hover:border-primary/30"
+                : "opacity-0 pointer-events-none"
+            }`}
+            aria-label="Scorri a destra"
+          >
+            <ChevronRight size={18} className="text-dark" />
+          </button>
+
+          {/* Scrollable row + fade hint */}
+          <div className="relative">
+            <div
+              ref={scrollRef}
+              className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 md:-mx-10 md:px-10"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              <style jsx>{`
+                div::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
+              {FEATURES.map((f) => {
+                const Visual = VISUAL_MAP[f.visual];
+                return (
+                  <div
+                    key={f.title}
+                    data-card
+                    className="flex-shrink-0 w-[280px] md:w-[340px] snap-start"
+                  >
+                    {/* Visual area */}
+                    <div className="h-[200px] md:h-[220px] bg-surface rounded-2xl border border-border/60 mb-5 overflow-hidden">
+                      <Visual />
+                    </div>
+                    {/* Text */}
+                    <h3 className="font-display text-[16px] md:text-[18px] font-bold text-dark leading-snug mb-2">
+                      {f.title}
+                    </h3>
+                    <p className="text-[13px] md:text-[14px] text-secondary leading-relaxed">
+                      {f.desc}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+
+          {/* Dot indicators (mobile only) */}
+          <div className="flex md:hidden justify-center gap-2 mt-6">
+            {FEATURES.map((f, i) => (
+              <button
+                key={f.title}
+                onClick={() => scrollToIndex(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === activeIndex
+                    ? "w-6 h-2 bg-primary"
+                    : "w-2 h-2 bg-border hover:bg-secondary/30"
+                }`}
+                aria-label={`Vai a ${f.title}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div
+          className={`text-center reveal ${vis ? "revealed" : ""}`}
+          style={{ transitionDelay: "0.2s" }}
+        >
+          <Link
+            href={CTA_URL}
+            className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[14px] rounded-xl px-7 py-3.5 transition-all duration-200 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
+          >
+            Richiedi accesso prioritario
+          </Link>
         </div>
       </div>
     </section>

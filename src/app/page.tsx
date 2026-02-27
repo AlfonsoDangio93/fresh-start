@@ -2,10 +2,10 @@ import Navbar from "@/components/sections/Navbar";
 import HeroSection from "@/components/sections/HeroSection";
 import PressBar from "@/components/sections/PressBar";
 import FeatureShowcase from "@/components/sections/FeatureShowcase";
-import StatsSection from "@/components/sections/StatsSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import ServicesSection from "@/components/sections/ServicesSection";
-import PeopleSection from "@/components/sections/PeopleSection";
+import PricingHomeSection from "@/components/sections/PricingHomeSection";
+import ComparisonSection from "@/components/sections/ComparisonSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
@@ -17,11 +17,11 @@ export default function Home() {
       <HeroSection />
       <PressBar />
       <FeatureShowcase />
-      <PeopleSection />
-      <StatsSection />
       <HowItWorksSection />
-      <TestimonialsSection />
       <ServicesSection />
+      <PricingHomeSection />
+      <ComparisonSection />
+      <TestimonialsSection />
       <CTASection />
       <Footer />
     </main>

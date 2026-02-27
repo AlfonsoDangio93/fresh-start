@@ -1,308 +1,266 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import TypingHeading from "@/components/TypingHeading";
 
-/* ─── Feature data ─── */
-const FEATURES = [
+const CTA_URL =
+  "https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw";
+
+/* ─── Illustrated SVG icons ─── */
+
+function PhoneClickIcon() {
+  return (
+    <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Phone body */}
+      <rect x="22" y="10" width="34" height="58" rx="7" fill="#6B7280" />
+      <rect x="22" y="10" width="34" height="58" rx="7" stroke="#4B5563" strokeWidth="1.5" />
+      <rect x="26" y="18" width="26" height="40" rx="3" fill="#E5E7EB" />
+      {/* Screen content lines */}
+      <rect x="30" y="24" width="14" height="2" rx="1" fill="#D1D5DB" />
+      <rect x="30" y="29" width="18" height="2" rx="1" fill="#D1D5DB" />
+      <rect x="30" y="34" width="10" height="2" rx="1" fill="#D1D5DB" />
+      {/* Home indicator */}
+      <rect x="34" y="62" width="10" height="2" rx="1" fill="#9CA3AF" />
+      {/* Cursor pointer */}
+      <path d="M56 38L63 46L58.5 47L61 53L57.5 54.5L55 48.5L51.5 51.5L56 38Z" fill="#F16B01" />
+      {/* Click spark lines */}
+      <line x1="65" y1="34" x2="70" y2="30" stroke="#F16B01" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="68" y1="42" x2="74" y2="42" stroke="#F16B01" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="65" y1="50" x2="70" y2="54" stroke="#F16B01" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ClockCheckIcon() {
+  return (
+    <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Clock face */}
+      <circle cx="40" cy="44" r="28" fill="#E5E7EB" stroke="#6B7280" strokeWidth="3" />
+      <circle cx="40" cy="44" r="24" fill="white" />
+      {/* Hour marks */}
+      <rect x="39" y="22" width="2" height="6" rx="1" fill="#9CA3AF" />
+      <rect x="39" y="60" width="2" height="6" rx="1" fill="#9CA3AF" />
+      <rect x="56" y="43" width="6" height="2" rx="1" fill="#9CA3AF" />
+      <rect x="18" y="43" width="6" height="2" rx="1" fill="#9CA3AF" />
+      {/* Clock hands */}
+      <line x1="40" y1="44" x2="40" y2="30" stroke="#4B5563" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="40" y1="44" x2="52" y2="44" stroke="#4B5563" strokeWidth="2" strokeLinecap="round" />
+      {/* Center dot */}
+      <circle cx="40" cy="44" r="2.5" fill="#4B5563" />
+      {/* Checkmark badge */}
+      <circle cx="62" cy="24" r="13" fill="#F16B01" />
+      <path d="M56 24L60 28L69 20" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function TechHouseIcon() {
+  return (
+    <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Person body */}
+      <circle cx="32" cy="24" r="10" fill="#6B7280" />
+      {/* Hard hat */}
+      <path d="M22 22C22 16.5 26.5 12 32 12C37.5 12 42 16.5 42 22H22Z" fill="#FCD34D" />
+      <rect x="20" y="21" width="24" height="3" rx="1.5" fill="#F59E0B" />
+      {/* Shoulders/body */}
+      <path d="M18 56C18 44 24 38 32 38C40 38 46 44 46 56" fill="#6B7280" />
+      {/* Shirt collar */}
+      <path d="M28 38L32 44L36 38" fill="#4B5563" />
+      {/* House */}
+      <path d="M58 42L72 32L86 42" fill="none" stroke="#6B7280" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="60" y="42" width="24" height="22" rx="2" fill="#E5E7EB" stroke="#6B7280" strokeWidth="1.5" />
+      {/* Door */}
+      <rect x="68" y="50" width="8" height="14" rx="1" fill="#D1D5DB" />
+      <circle cx="74" cy="57" r="1" fill="#9CA3AF" />
+      {/* Window */}
+      <rect x="63" y="46" width="6" height="5" rx="1" fill="#BFDBFE" stroke="#6B7280" strokeWidth="0.8" />
+      {/* Checkmark badge */}
+      <circle cx="62" cy="24" r="13" fill="#F16B01" />
+      <path d="M56 24L60 28L69 20" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function PhoneReportIcon() {
+  return (
+    <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Phone body */}
+      <rect x="22" y="10" width="38" height="62" rx="7" fill="#6B7280" />
+      <rect x="22" y="10" width="38" height="62" rx="7" stroke="#4B5563" strokeWidth="1.5" />
+      <rect x="26" y="18" width="30" height="44" rx="3" fill="#E5E7EB" />
+      {/* Screen: photo placeholder */}
+      <rect x="30" y="22" width="22" height="14" rx="2" fill="#D1D5DB" />
+      {/* Mountain/image icon in photo */}
+      <path d="M33 33L38 27L42 31L46 25L49 33H33Z" fill="#9CA3AF" />
+      <circle cx="36" cy="26" r="2" fill="#9CA3AF" />
+      {/* Dollar/cost line */}
+      <rect x="30" y="40" width="10" height="2.5" rx="1" fill="#6B7280" />
+      <rect x="42" y="40" width="10" height="2.5" rx="1" fill="#22C55E" />
+      {/* Status bar */}
+      <rect x="30" y="46" width="22" height="2" rx="1" fill="#D1D5DB" />
+      <rect x="30" y="51" width="16" height="2" rx="1" fill="#D1D5DB" />
+      <rect x="30" y="56" width="12" height="2" rx="1" fill="#D1D5DB" />
+      {/* Home indicator */}
+      <rect x="36" y="66" width="10" height="2" rx="1" fill="#9CA3AF" />
+      {/* Checkmark badge */}
+      <circle cx="64" cy="20" r="13" fill="#F16B01" />
+      <path d="M58 20L62 24L71 16" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const BENEFITS = [
   {
-    badge: "Dashboard",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F16B01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 3v18h18" />
-        <path d="M7 16l4-8 4 4 4-6" />
-      </svg>
-    ),
-    title: <>Tutti i tuoi alloggi. Un colpo d&#8217;occhio.</>,
-    bullets: [
-      "Ticket aperti, costi, tempi di risposta: tutto in una schermata. Basta fogli Excel e gruppi WhatsApp.",
-      "Filtra per alloggio, tecnico o priorit\u00e0. Trovi quello che cerchi in due click.",
-      "Esporta report in PDF per i proprietari. Rendicontazione trasparente, zero fatica.",
-    ],
-    mockup: <DashboardFeatureMockup />,
+    visual: <PhoneClickIcon />,
+    title: "Zero telefonate. Un solo click.",
+    desc: "Segnala il guasto via app, noi lo gestiamo dall\u2019intervento alla supervisione alla chiusura. Tu ricevi solo il report finale.",
   },
   {
-    badge: "Ticketing",
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F16B01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-      </svg>
-    ),
-    title: "Un guasto mal gestito ti brucia recensioni e fatturato.",
-    bullets: [
-      "Basta messaggi a orari assurdi, preventivi che non arrivano, tecnici che spariscono. Ci pensiamo noi.",
-      "Staff e addetti segnalano dall\u2019app con foto. Tu ricevi solo la conferma: \u201cProblema risolto\u201d.",
-      "Ogni intervento tracciato dall\u2019inizio alla fine. Ospiti soddisfatti, recensioni intatte.",
-    ],
-    mockup: <TicketMockup />,
-    reverse: true,
+    visual: <ClockCheckIcon />,
+    title: "Interveniamo entro 4 ore. Anche con ospiti in casa.",
+    desc: "Evita recensioni negative e cancellazioni. Priorit\u00e0 garantita su ogni intervento.",
+  },
+  {
+    visual: <TechHouseIcon />,
+    title: "Tecnico dedicato per ogni immobile.",
+    desc: "Lo stesso professionista, gi\u00e0 formato sul tuo appartamento. Niente imprevisti, niente sorprese.",
+  },
+  {
+    visual: <PhoneReportIcon />,
+    title: "Foto, costi e aggiornamenti in tempo reale.",
+    desc: "Controlla tutto via app. Approvazione solo quando necessario. Nessuna sorpresa, mai.",
   },
 ];
 
-/* ─── Ticket mockup (phone-style) ─── */
-function TicketMockup() {
-  return (
-    <div className="relative">
-      {/* Phone frame */}
-      <div className="relative w-[260px] md:w-[280px] bg-white rounded-[2rem] shadow-2xl shadow-black/15 border border-[#E5E5E5] p-2 mx-auto">
-        <div className="bg-[#FAFAFA] rounded-[1.5rem] overflow-hidden">
-          {/* Status bar */}
-          <div className="flex items-center justify-between px-5 pt-3 pb-2">
-            <span className="text-[9px] font-semibold text-dark">9:41</span>
-            <div className="flex items-center gap-1">
-              <div className="w-3.5 h-2 rounded-sm border border-dark/30" />
-            </div>
-          </div>
-
-          {/* Header */}
-          <div className="px-4 pb-3 border-b border-[#EFEFEF]">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-red-500" />
-              <span className="text-[10px] font-semibold text-dark">Alta priorit&agrave;</span>
-            </div>
-            <p className="text-[13px] font-bold text-dark mt-1.5">Perdita rubinetto bagno</p>
-            <p className="text-[9px] text-secondary/50 mt-0.5">Via Roma 12, Milano</p>
-          </div>
-
-          {/* Details */}
-          <div className="px-4 py-3 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] text-secondary/40">Stato</span>
-              <span className="text-[9px] font-semibold text-white bg-primary rounded px-2 py-0.5">In corso</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] text-secondary/40">Priorit&agrave;</span>
-              <span className="text-[9px] font-medium text-amber-600">Media</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] text-secondary/40">Tecnico</span>
-              <span className="text-[9px] font-medium text-dark">Marco Bianchi</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] text-secondary/40">Creato</span>
-              <span className="text-[9px] font-medium text-dark">18 Feb 2026, 10:30</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] text-secondary/40">Scadenza</span>
-              <span className="text-[9px] font-medium text-red-500">Oggi, 16:00</span>
-            </div>
-          </div>
-
-          {/* Photo */}
-          <div className="px-4 pb-3">
-            <div className="w-full h-[80px] rounded-lg bg-gradient-to-br from-primary/8 to-primary/3 flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F16B01" strokeWidth="1.5" opacity="0.4">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <path d="M21 15l-5-5L5 21" />
-              </svg>
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="px-4 pb-4">
-            <div className="w-full py-2.5 bg-primary rounded-xl text-center text-[11px] font-semibold text-white">
-              Segnala problema
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Floating card — ticket detail overlay */}
-      <div className="absolute -top-4 -right-8 md:-right-12 w-[200px] bg-white rounded-xl shadow-xl shadow-black/10 border border-[#EBEBEB] p-3.5 z-10">
-        <div className="flex items-center gap-2 mb-2.5">
-          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-            <div className="w-2 h-2 rounded-full bg-primary" />
-          </div>
-          <p className="text-[10px] font-semibold text-dark">Intervento in corso</p>
-        </div>
-        <div className="space-y-2 text-[9px]">
-          <div>
-            <p className="text-secondary/40">Tecnico</p>
-            <p className="text-dark font-medium">Marco Bianchi</p>
-          </div>
-          <div>
-            <p className="text-secondary/40">ETA</p>
-            <p className="text-dark font-medium">15 minuti</p>
-          </div>
-          <div className="flex items-center gap-1.5 pt-0.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            <p className="text-[8px] text-green-600 font-medium">In arrivo</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Dashboard feature mockup ─── */
-function DashboardFeatureMockup() {
-  return (
-    <div className="relative">
-      {/* Browser-style frame */}
-      <div className="relative w-[320px] md:w-[360px] bg-white rounded-xl shadow-2xl shadow-black/15 border border-[#E5E5E5] overflow-hidden mx-auto">
-        {/* Browser bar */}
-        <div className="flex items-center gap-1.5 px-3 py-2 bg-[#FAFAFA] border-b border-[#EFEFEF]">
-          <div className="w-2 h-2 rounded-full bg-[#FF5F57]" />
-          <div className="w-2 h-2 rounded-full bg-[#FEBC2E]" />
-          <div className="w-2 h-2 rounded-full bg-[#28C840]" />
-          <div className="ml-2 flex-1 bg-white rounded px-2 py-0.5 text-[8px] text-secondary/30 border border-[#EFEFEF]">app.hommi.it/dashboard</div>
-        </div>
-
-        {/* Content */}
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-[12px] font-semibold text-dark">Panoramica</p>
-              <p className="text-[9px] text-secondary/40">Ultimo aggiornamento: 2 min fa</p>
-            </div>
-          </div>
-
-          {/* Stats row */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {[
-              { label: "Aperti", val: "12", color: "text-primary" },
-              { label: "In corso", val: "5", color: "text-amber-500" },
-              { label: "Risolti", val: "28", color: "text-green-600" },
-            ].map((s) => (
-              <div key={s.label} className="bg-[#FAFAFA] rounded-lg p-2 border border-[#F0F0F0] text-center">
-                <p className="text-[7px] text-secondary/40 uppercase tracking-wider font-medium mb-0.5">{s.label}</p>
-                <p className={`text-[16px] font-bold leading-none ${s.color}`}>{s.val}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Mini chart */}
-          <div className="mb-3">
-            <p className="text-[8px] font-semibold text-secondary/40 uppercase tracking-wider mb-2">Ticket settimanali</p>
-            <div className="flex items-end gap-1.5 h-[50px]">
-              {[40, 65, 35, 80, 55, 70, 45].map((h, i) => (
-                <div key={i} className="flex-1 rounded-t bg-primary/15 relative" style={{ height: `${h}%` }}>
-                  <div className="absolute bottom-0 left-0 right-0 rounded-t bg-primary" style={{ height: "55%" }} />
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-1 text-[7px] text-secondary/30">
-              <span>Lun</span><span>Mar</span><span>Mer</span><span>Gio</span><span>Ven</span><span>Sab</span><span>Dom</span>
-            </div>
-          </div>
-
-          {/* Recent activity */}
-          <div>
-            <p className="text-[8px] font-semibold text-secondary/40 uppercase tracking-wider mb-2">Attivit&agrave; recenti</p>
-            <div className="space-y-0">
-              {[
-                { text: "Ticket #142 risolto", time: "5 min fa", dot: "bg-green-500" },
-                { text: "Nuovo: Serratura rotta", time: "12 min fa", dot: "bg-primary" },
-                { text: "Tecnico assegnato #139", time: "30 min fa", dot: "bg-blue-500" },
-              ].map((a, i) => (
-                <div key={i} className="flex items-start gap-2 py-1.5 border-b border-[#F5F5F5] last:border-0">
-                  <div className={`w-1.5 h-1.5 rounded-full ${a.dot} mt-1 shrink-0`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[9px] text-dark truncate">{a.text}</p>
-                    <p className="text-[7px] text-secondary/30">{a.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Floating notification */}
-      <div className="absolute -bottom-4 -left-8 md:-left-12 w-[190px] bg-white rounded-xl shadow-xl shadow-black/10 border border-[#EBEBEB] p-3.5 z-10">
-        <div className="flex items-center gap-2 mb-2.5">
-          <div className="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center">
-            <div className="w-2 h-2 rounded-full bg-green-500" />
-          </div>
-          <p className="text-[10px] font-semibold text-dark">Report pronto</p>
-        </div>
-        <div className="space-y-2 text-[9px]">
-          <div>
-            <p className="text-secondary/40">Efficienza</p>
-            <p className="text-dark font-medium">+12% vs mese scorso</p>
-          </div>
-          <div>
-            <p className="text-secondary/40">Costo medio</p>
-            <p className="text-dark font-medium">&euro;85 per intervento</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Checkmark icon ─── */
-function Check() {
-  return (
-    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F16B01" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 6L9 17l-5-5" />
-      </svg>
-    </div>
-  );
-}
-
-/* ─── Main section ─── */
 export default function FeatureShowcase() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [vis, setVis] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const [headerVis, setHeaderVis] = useState(false);
+  const [cardVis, setCardVis] = useState<boolean[]>(new Array(BENEFITS.length).fill(false));
+  const [ctaVis, setCtaVis] = useState(false);
 
+  // Header: one-time reveal
   useEffect(() => {
-    if (!ref.current) return;
+    if (!headerRef.current) return;
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect(); } },
+      ([e]) => { if (e.isIntersecting) { setHeaderVis(true); obs.disconnect(); } },
       { threshold: 0.15 }
     );
-    obs.observe(ref.current);
+    obs.observe(headerRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  // Cards: reversible scroll-triggered on mobile, one-time on desktop
+  const updateCardVisibility = useCallback(() => {
+    const isMobile = window.innerWidth < 768;
+    cardRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      if (isMobile) {
+        const visible = rect.top < windowH * 0.85 && rect.bottom > windowH * 0.1;
+        setCardVis((prev) => {
+          if (prev[i] === visible) return prev;
+          const next = [...prev];
+          next[i] = visible;
+          return next;
+        });
+      } else {
+        if (rect.top < windowH * 0.85) {
+          setCardVis((prev) => {
+            if (prev[i]) return prev;
+            const next = [...prev];
+            next[i] = true;
+            return next;
+          });
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    updateCardVisibility();
+    window.addEventListener("scroll", updateCardVisibility, { passive: true });
+    window.addEventListener("resize", updateCardVisibility);
+    return () => {
+      window.removeEventListener("scroll", updateCardVisibility);
+      window.removeEventListener("resize", updateCardVisibility);
+    };
+  }, [updateCardVisibility]);
+
+  // CTA: one-time reveal
+  useEffect(() => {
+    if (!ctaRef.current) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setCtaVis(true); obs.disconnect(); } },
+      { threshold: 0.3 }
+    );
+    obs.observe(ctaRef.current);
     return () => obs.disconnect();
   }, []);
 
   return (
-    <section ref={ref} className="py-20 md:py-28">
-      <div className="max-w-site mx-auto px-6 space-y-24 md:space-y-32">
-        {FEATURES.map((f, i) => (
-          <div
-            key={f.badge}
-            className={`grid lg:grid-cols-2 gap-12 lg:gap-16 items-center reveal ${vis ? "revealed" : ""}`}
-            style={{ transitionDelay: `${i * 0.15}s` }}
+    <section ref={sectionRef} className="py-20 md:py-28">
+      <div className="max-w-site mx-auto px-6">
+        {/* Header */}
+        <div ref={headerRef} className={`text-center mb-16 reveal ${headerVis ? "revealed" : ""}`}>
+          {headerVis ? (
+            <TypingHeading
+              lines={["Dimentica lo stress degli imprevisti.", "Affidati a Hommi."]}
+              className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight"
+              speed={40}
+              startDelay={200}
+            />
+          ) : (
+            <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
+              <span className="block invisible">Dimentica lo stress degli imprevisti.</span>
+              <span className="block invisible">Affidati a Hommi.</span>
+            </h2>
+          )}
+          <p className="mt-5 text-secondary text-[15px] md:text-[17px] max-w-[520px] mx-auto leading-relaxed">
+            Gestione della casa senza stress: un click, un tecnico, zero complicazioni.
+          </p>
+        </div>
+
+        {/* 4 benefit columns — like the old design */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 max-w-[1100px] mx-auto mb-14">
+          {BENEFITS.map((b, i) => (
+            <div
+              key={b.title}
+              ref={(el) => { cardRefs.current[i] = el; }}
+              className="text-center transition-all duration-500 ease-out"
+              style={{
+                opacity: cardVis[i] ? 1 : 0,
+                transform: cardVis[i] ? "translateY(0)" : "translateY(32px)",
+                transitionDelay: `${i * 0.1}s`,
+              }}
+            >
+              {/* Illustrated icon */}
+              <div className="flex justify-center mb-5">
+                {b.visual}
+              </div>
+              <h3 className="font-display text-[16px] md:text-[18px] font-bold text-dark leading-snug mb-3">
+                {b.title}
+              </h3>
+              <p className="text-[13px] md:text-[14px] text-secondary leading-relaxed">
+                {b.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <div ref={ctaRef} className={`text-center reveal ${ctaVis ? "revealed" : ""}`}>
+          <Link
+            href={CTA_URL}
+            className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[14px] rounded-xl px-7 py-3.5 transition-all duration-200 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
           >
-            {/* Mockup */}
-            <div className={`flex justify-center ${f.reverse ? "lg:order-2" : ""}`}>
-              {f.mockup}
-            </div>
-
-            {/* Copy */}
-            <div className={f.reverse ? "lg:order-1" : ""}>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-11 h-11 rounded-xl bg-primary/8 flex items-center justify-center">
-                  {f.icon}
-                </div>
-                <span className="text-[12px] font-semibold text-primary uppercase tracking-[0.12em]">{f.badge}</span>
-              </div>
-
-              <h2 className="font-display text-[26px] md:text-[34px] font-bold text-dark leading-[1.15] tracking-tight mb-6">
-                {f.title}
-              </h2>
-
-              <div className="space-y-4 mb-8">
-                {f.bullets.map((b, j) => (
-                  <div key={j} className="flex items-start gap-3">
-                    <Check />
-                    <p className="text-[14px] md:text-[15px] text-secondary leading-relaxed">{b}</p>
-                  </div>
-                ))}
-              </div>
-
-              <Link
-                href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
-                className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[14px] rounded-xl px-7 py-3 transition-all duration-200 hover:bg-primary-hover hover:shadow-lg hover:shadow-primary/20 cursor-pointer"
-              >
-                Richiedi accesso prioritario
-              </Link>
-            </div>
-          </div>
-        ))}
+            Richiedi accesso prioritario
+          </Link>
+        </div>
       </div>
     </section>
   );

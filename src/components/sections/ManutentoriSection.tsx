@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import TypingHeading from "@/components/TypingHeading";
 
 const CTA_URL =
   "https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw";
@@ -109,11 +110,7 @@ export default function ManutentoriSection() {
         <span className="inline-block text-[11px] font-semibold text-primary uppercase tracking-[0.12em] mb-5">
           Per Manutentori
         </span>
-        <h1 className="font-display text-[32px] md:text-[46px] lg:text-[52px] font-bold text-dark leading-[1.08] tracking-tight">
-          Fai il lavoro che ami.{" "}
-          <br className="hidden md:block" />
-          Al resto pensiamo noi.
-        </h1>
+        <TypingHeading lines={["Fai il lavoro che ami.", "Al resto pensiamo noi."]} />
         <p className="mt-5 text-secondary text-[16px] md:text-[18px] max-w-[580px] mx-auto leading-relaxed">
           Entra nella rete Hommi: ricevi incarichi da property manager verificati,
           gestisci tutto dall&apos;app e vieni pagato puntualmente.

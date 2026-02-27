@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import TypingHeading from "@/components/TypingHeading";
 
 /* ─── FAQ data ─── */
 const FAQS = [
@@ -89,9 +90,7 @@ export default function FAQSection() {
     <div className="pt-32 md:pt-40 pb-20 md:pb-28">
       {/* Header */}
       <div className="max-w-site mx-auto px-6 text-center mb-16">
-        <h1 className="font-display text-[32px] md:text-[46px] lg:text-[52px] font-bold text-dark leading-[1.08] tracking-tight">
-          Domande frequenti
-        </h1>
+        <TypingHeading lines={["Domande frequenti"]} />
         <p className="mt-5 text-secondary text-[16px] md:text-[18px] max-w-[560px] mx-auto leading-relaxed">
           Tutto quello che devi sapere su Hommi, dalla gestione dei guasti ai
           costi. Se non trovi la risposta, scrivici.

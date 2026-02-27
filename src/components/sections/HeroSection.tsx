@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import { useTypingEffect } from "@/components/TypingHeading";
 
 /* ─── Notion-style navigable dashboard mockup ─── */
 
@@ -539,35 +540,11 @@ function DashboardMockup() {
   );
 }
 
-/* ─── Typing effect hook ─── */
-function useTypingEffect(text: string, speed = 45, startDelay = 300) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-  const idx = useRef(0);
-
-  useEffect(() => {
-    const delayTimer = setTimeout(() => {
-      const interval = setInterval(() => {
-        idx.current++;
-        setDisplayed(text.slice(0, idx.current));
-        if (idx.current >= text.length) {
-          clearInterval(interval);
-          setDone(true);
-        }
-      }, speed);
-      return () => clearInterval(interval);
-    }, startDelay);
-    return () => clearTimeout(delayTimer);
-  }, [text, speed, startDelay]);
-
-  return { displayed, done };
-}
-
 export default function HeroSection() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { const t = setTimeout(() => setMounted(true), 100); return () => clearTimeout(t); }, []);
 
-  const LINES = ["Mai più", "rincorrere", "un tecnico."];
+  const LINES = ["Ogni guasto nei tuoi", "immobili risolto", "in giornata."];
   const FULL = LINES.join(" ");
   const { displayed, done } = useTypingEffect(FULL, 45, 400);
 
@@ -583,8 +560,8 @@ export default function HeroSection() {
   );
 
   return (
-    <section className="relative bg-white overflow-hidden rounded-b-[10px] min-h-[80vh] lg:min-h-0 flex flex-col">
-      <div className="max-w-site mx-auto px-6 pt-28 pb-16 md:pt-40 md:pb-0 flex-1 flex flex-col justify-center lg:block">
+    <section className="relative bg-white overflow-hidden rounded-b-[10px] min-h-svh lg:min-h-0 flex flex-col">
+      <div className="max-w-site mx-auto px-6 pt-28 pb-0 md:pt-40 md:pb-0 flex-1 flex flex-col justify-center lg:block">
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-8 items-end">
           {/* Left — copy */}
           <div className="text-center lg:text-left lg:pb-24">
@@ -603,54 +580,51 @@ export default function HeroSection() {
             </h1>
 
             <p
-              className={`mt-6 text-secondary text-[15px] md:text-[18px] max-w-[460px] mx-auto lg:mx-0 leading-[1.7] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              className={`mt-6 text-secondary text-[15px] md:text-[18px] max-w-[500px] mx-auto lg:mx-0 leading-[1.7] hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
               style={{ transitionDelay: "0.1s" }}
             >
-              Guasti e manutenzione gestiti per te, ovunque tu sia.
-              Tecnici verificati, aggiornamenti in tempo reale.
-              Tu vedi solo &ldquo;Problema risolto&rdquo;.
+              Hommi è il servizio per property manager che vogliono zero stress e interventi risolti in giornata. Gestiamo ogni guasto e imprevisto al posto tuo: intervento, supervisione, report con foto e costi, anche con ospiti presenti.
             </p>
 
+            {/* Testimonial (inline, desktop) */}
             <div
-              className={`mt-8 md:mt-10 flex flex-row items-center justify-center lg:justify-start gap-3 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
-              style={{ transitionDelay: "0.2s" }}
+              className={`mt-8 md:mt-10 hidden lg:block hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              style={{ transitionDelay: "0.25s" }}
+            >
+              <div className="flex items-start gap-3 max-w-[460px]">
+                <img
+                  src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face"
+                  alt="Francesca"
+                  className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
+                />
+                <div>
+                  <p className="text-[14px] text-secondary leading-relaxed">
+                    &ldquo;In 2 ore era tutto risolto — senza dover chiamare nessuno.&rdquo;
+                  </p>
+                  <p className="text-[11px] text-secondary/50 mt-1">
+                    <span className="font-semibold text-dark/70">Francesca</span> · PM, 12 case a Torino
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA buttons (desktop) */}
+            <div
+              className={`mt-8 md:mt-10 hidden lg:flex flex-row items-center gap-3 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+              style={{ transitionDelay: "0.3s" }}
             >
               <Link
                 href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
-                className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[14px] md:text-[15px] rounded-[10px] px-5 md:px-8 py-3.5 transition-all duration-200 hover:bg-primary-hover shadow-lg shadow-primary/20 cursor-pointer"
+                className="inline-flex items-center justify-center bg-primary text-white font-semibold text-[15px] rounded-[10px] px-8 py-3.5 transition-all duration-200 hover:bg-primary-hover shadow-lg shadow-primary/20 cursor-pointer"
               >
                 Richiedi accesso prioritario
               </Link>
               <Link
                 href="#come-funziona"
-                className="inline-flex items-center justify-center text-dark font-semibold text-[14px] md:text-[15px] rounded-[10px] px-4 md:px-8 py-3.5 border border-border hover:border-dark/30 transition-all duration-200 cursor-pointer"
+                className="inline-flex items-center justify-center text-dark font-semibold text-[15px] rounded-[10px] px-8 py-3.5 border border-border hover:border-dark/30 transition-all duration-200 cursor-pointer"
               >
                 Vedi come funziona
               </Link>
-            </div>
-
-            {/* Social proof */}
-            <div
-              className={`mt-12 md:mt-14 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
-              style={{ transitionDelay: "0.3s" }}
-            >
-              <div className="flex items-center justify-center lg:justify-start gap-[2px] mb-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <svg key={i} width="18" height="18" viewBox="0 0 20 20">
-                    <defs>
-                      <clipPath id={`star-clip-${i}`}>
-                        <rect x="0" y="0" width={i <= 4 ? 20 : 20 * 0.8} height="20" />
-                      </clipPath>
-                    </defs>
-                    <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.26 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="none" stroke="#05B67A" strokeWidth="1" />
-                    <path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.26 5.06 16.7 6 11.21l-4-3.9 5.53-.8L10 1.5z" fill="#05B67A" clipPath={`url(#star-clip-${i})`} />
-                  </svg>
-                ))}
-                <span className="text-[13px] text-secondary/50 ml-2">4.8 / 5</span>
-              </div>
-              <p className="text-[13px] text-secondary/50 text-center lg:text-left">
-                Scelto da <span className="text-dark font-medium">2.000+</span> property manager in Italia
-              </p>
             </div>
           </div>
 
@@ -659,10 +633,78 @@ export default function HeroSection() {
             className={`relative hidden lg:block hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
             style={{ transitionDelay: "0.15s" }}
           >
-            <div className="translate-y-12">
+            <div className="-translate-y-24">
               <DashboardMockup />
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile bottom area — testimonial + CTAs + scroll arrow */}
+      <div className="lg:hidden mt-auto pb-6 px-6">
+        {/* Testimonial */}
+        <div
+          className={`flex items-start gap-3 max-w-[460px] mx-auto mb-6 hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+          style={{ transitionDelay: "0.25s" }}
+        >
+          <img
+            src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=face"
+            alt="Francesca"
+            className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
+          />
+          <div>
+            <p className="text-[13px] text-secondary leading-relaxed">
+              &ldquo;In 2 ore era tutto risolto — senza dover chiamare nessuno.&rdquo;
+            </p>
+            <p className="text-[11px] text-secondary/50 mt-1">
+              <span className="font-semibold text-dark/70">Francesca</span> · PM, 12 case a Torino
+            </p>
+          </div>
+        </div>
+
+        {/* CTA buttons */}
+        <div
+          className={`flex flex-col gap-3 max-w-[400px] mx-auto hero-text-entrance ${mounted ? "hero-text-visible" : ""}`}
+          style={{ transitionDelay: "0.3s" }}
+        >
+          <Link
+            href="https://prenota.hommi.it/richiedi-accesso?_gl=1*1clkze1*_up*MQ..*_ga*MjkzODMxMTE4LjE3NzE5Mzk1MzY.*_ga_4NVKFSN1CY*czE3NzE5Mzk1MzUkbzEkZzAkdDE3NzE5Mzk1MzUkajYwJGwwJGgw"
+            className="flex items-center justify-center bg-primary text-white font-semibold text-[14px] rounded-[10px] px-5 py-3.5 transition-all duration-200 hover:bg-primary-hover shadow-lg shadow-primary/20 cursor-pointer"
+          >
+            Richiedi accesso prioritario
+          </Link>
+          <Link
+            href="#come-funziona"
+            className="flex items-center justify-center text-dark font-semibold text-[14px] rounded-[10px] px-4 py-3.5 border border-border hover:border-dark/30 transition-all duration-200 cursor-pointer"
+          >
+            Vedi come funziona
+          </Link>
+        </div>
+
+        {/* Scroll down arrow */}
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => {
+              const start = window.scrollY;
+              const target = start + window.innerHeight * 0.85;
+              const duration = 500;
+              let startTime: number | null = null;
+              const ease = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+              const step = (timestamp: number) => {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                window.scrollTo(0, start + (target - start) * ease(progress));
+                if (progress < 1) requestAnimationFrame(step);
+              };
+              requestAnimationFrame(step);
+            }}
+            className="animate-hero-bounce"
+            aria-label="Scorri in basso"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-secondary/40">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>

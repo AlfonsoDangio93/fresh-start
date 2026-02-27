@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import TypingHeading from "@/components/TypingHeading";
 
 /* ─── Review data ─── */
 const REVIEWS = [
@@ -232,11 +233,20 @@ export default function TestimonialsSection() {
         {/* Header */}
         <div className={`text-center mb-14 reveal ${vis ? "revealed" : ""}`}>
           <span className="inline-block text-[11px] font-semibold text-dark uppercase tracking-[0.08em] border border-border rounded-full px-3.5 py-1.5 mb-5">
-            Recensioni
+            Dicono di noi
           </span>
-          <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
-            Chi lo usa, non torna indietro.
-          </h2>
+          {vis ? (
+            <TypingHeading
+              lines={["Chi lo usa, non torna indietro."]}
+              className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight"
+              speed={40}
+              startDelay={200}
+            />
+          ) : (
+            <h2 className="font-display text-[28px] md:text-[40px] lg:text-[46px] font-bold text-dark leading-[1.08] tracking-tight">
+              <span className="block invisible">Chi lo usa, non torna indietro.</span>
+            </h2>
+          )}
           <div className="flex items-center justify-center gap-2.5 mt-6">
             <div className="flex items-center gap-1.5 bg-surface border border-border rounded-full px-4 py-2">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#22804A" stroke="none">
