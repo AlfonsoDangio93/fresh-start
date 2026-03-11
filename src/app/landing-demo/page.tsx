@@ -7,12 +7,14 @@ import ServicesSection from "@/components/sections/ServicesSection";
 import PricingHomeSection from "@/components/sections/PricingHomeSection";
 import ComparisonSection from "@/components/sections/ComparisonSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
+import HomeFAQSection from "@/components/sections/HomeFAQSection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
+import MobileBottomCTA from "@/components/sections/MobileBottomCTA";
 
-export default function Home() {
+export default function LandingDemo() {
   return (
-    <main className="bg-[#FAFAFA] min-h-screen overflow-x-hidden">
+    <main className="bg-[#FAFAFA] min-h-screen overflow-x-hidden pb-20 md:pb-0">
       <Navbar />
       <HeroSection />
       <PressBar />
@@ -22,8 +24,10 @@ export default function Home() {
       <PricingHomeSection />
       <ComparisonSection />
       <TestimonialsSection />
+      <HomeFAQSection />
       <CTASection />
       <Footer />
+      <MobileBottomCTA />
     </main>
   );
 }
