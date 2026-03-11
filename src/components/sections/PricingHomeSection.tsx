@@ -30,7 +30,7 @@ export default function PricingHomeSection() {
   }, []);
 
   return (
-    <section ref={ref} className="py-20 md:py-28">
+    <section id="prezzi" ref={ref} className="py-20 md:py-28">
       <div className="max-w-site mx-auto px-6">
         {/* Header */}
         <div className={`text-center mb-6 reveal ${vis ? "revealed" : ""}`}>
